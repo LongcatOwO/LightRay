@@ -3,7 +3,7 @@
 
 
 #include <lightray/traits/common.hpp>
-#include <lightray/traits/type.hpp>
+#include <lightray/traits/sequence.hpp>
 
 
 #endif

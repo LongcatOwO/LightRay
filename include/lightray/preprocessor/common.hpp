@@ -6,6 +6,7 @@
 #include <lightray/preprocessor/common/defer.hpp>
 #include <lightray/preprocessor/common/empty.hpp>
 #include <lightray/preprocessor/common/eval.hpp>
+#include <lightray/preprocessor/common/join.hpp>
 #include <lightray/preprocessor/common/repeat.hpp>
 #include <lightray/preprocessor/common/stringize.hpp>
 #include <lightray/preprocessor/common/symbols.hpp>

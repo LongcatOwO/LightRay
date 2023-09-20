@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <type_traits>
 
+#include <lightray/attribute.hpp>
 #include <lightray/coredef.hpp>
 #include <lightray/reflection/member_tuple.hpp>
 
@@ -25,16 +26,52 @@ namespace lightray
             T, std::make_index_sequence<meta<T>::member_count>
         >::type;
 
+
+
+
     template <reflected T, fixed_string Name>
     struct member_info_base : get_member_metas<T>::template get<Name> {};
 
+
     template <reflected T, fixed_string Name>
-    struct member_info : member_info_base<T, Name> {};
+    struct member_info_add_attributes : virtual member_info_base<T, Name>
+    { 
+        using attributes = attribute_sequence<>; 
+
+    private:
+        using base = member_info_base<T, Name>;
+        static_assert(attributes::is_valid_for(base::category));
+    };
+
+    template <reflected T, fixed_string Name>
+    requires requires { typename member_info_base<T, Name>::attributes; }
+    struct member_info_add_attributes<T, Name> : virtual member_info_base<T, Name> 
+    {
+    private:
+        using base = member_info_base<T, Name>;
+        static_assert(base::attributes::is_valid_for(base::category));
+    };
+
+
+    template <reflected T, fixed_string Name>
+    struct member_info_add_bases : virtual member_info_base<T, Name>
+    { using bases = traits::type_sequence<>; };
+
+    template <reflected T, fixed_string Name>
+    requires requires { typename member_info_base<T, Name>::bases; }
+    struct member_info_add_bases<T, Name> : virtual member_info_base<T, Name> {};
+
+
+    template <reflected T, fixed_string Name>
+    struct member_info : 
+        virtual member_info_base<T, Name>,
+        member_info_add_attributes<T, Name> {};
 
     template <reflected T, fixed_string Name>
     requires (member_info_base<T, Name>::category == category::variable)
     struct member_info<T, Name> :
-        member_info_base<T, Name>,
+        virtual member_info_base<T, Name>,
+        member_info_add_attributes<T, Name>,
         traits::pointer_invoker<T, member_info_base<T, Name>::pointer>
     {
     private:
@@ -52,7 +89,9 @@ namespace lightray
 
     template <reflected T, fixed_string Name>
     requires (member_info_base<T, Name>::category == category::variable_template)
-    struct member_info<T, Name> : member_info_base<T, Name>
+    struct member_info<T, Name> : 
+        virtual member_info_base<T, Name>,
+        member_info_add_attributes<T, Name>
     {
     private:
         using base = member_info_base<T, Name>;
@@ -60,6 +99,9 @@ namespace lightray
     public:
         static constexpr bool is_static = true;
     };
+
+
+
 
     template <reflected T>
     struct type_info_add_bases : virtual meta<T>
@@ -69,10 +111,29 @@ namespace lightray
     requires requires { typename meta<T>::bases; }
     struct type_info_add_bases<T> : virtual meta<T> {};
 
+    
+    template <reflected T>
+    struct type_info_add_attributes : virtual meta<T>
+    { 
+        using attributes = attribute_sequence<>; 
+        static_assert(attributes::is_valid_for(meta<T>::category));
+    };
+
+    template <reflected T>
+    requires requires { typename meta<T>::attributes; }
+    struct type_info_add_attributes<T> : virtual meta<T> 
+    {
+        static_assert(meta<T>::attributes::is_valid_for(meta<T>::category));
+    };
+
+
+
+
     template <reflected T>
     struct type_info : 
         virtual meta<T>,
-        type_info_add_bases<T>
+        type_info_add_bases<T>,
+        type_info_add_attributes<T>
     {
     private:
         template <reflected U>

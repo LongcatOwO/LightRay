@@ -69,10 +69,17 @@ namespace lightray
             ::template filter<Predicate, Dummy>::template apply<member_tuple, Dummy>;
 
         template <category Filter, typename Dummy = void>
-        using filter_by_category = typename filter<
+        using filter_by_category = filter<
                 []<typename Member>(traits::type_<Member>)
                 { return static_cast<bool>(Member::category & Filter); }, Dummy
-            >::template apply<member_tuple, Dummy>;
+            >;
+
+        template <typename DeclaringType, fixed_string Name, typename Dummy = void>
+        using get_declared_by = typename filter<
+                []<typename Member>(traits::type_<Member>)
+                { return std::is_same_v<DeclaringType, typename Member::declaring_type>; }
+            , Dummy>::template get<Name>;
+
 
         template <typename Fn>
         static constexpr void for_each(Fn &&fn)

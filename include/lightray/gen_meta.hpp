@@ -95,11 +95,28 @@ LIGHTRAY_PP_CONCAT( \
 )
 
 
+#define _LIGHTRAY_REFL_D_BASES(...) LIGHTRAY_PP_DEFER(_LIGHTRAY_REFL_BASES)(__VA_ARGS__)
 #define _LIGHTRAY_REFL_BASES(...) \
     using bases = ::lightray::traits::type_sequence<__VA_ARGS__>;
 
+#define _LIGHTRAY_REFL_D_ATTRIBUTES(...) LIGHTRAY_PP_DEFER(_LIGHTRAY_REFL_ATTRIBUTES)(__VA_ARGS__)
+#define _LIGHTRAY_REFL_ATTRIBUTES(...) \
+    using attributes = ::lightray::attribute_sequence<__VA_ARGS__>;
+
 #define _LIGHTRAY_REFL_D_EXTRA(...) LIGHTRAY_PP_DEFER(_LIGHTRAY_REFL_EXTRA)(__VA_ARGS__)
-#define _LIGHTRAY_REFL_EXTRA(...)
+#define _LIGHTRAY_REFL_EXTRA(...) \
+    _LIGHTRAY_REFL_EXTRA_EXPAND(_LIGHTRAY_REFL_EXTRA_EXPAND( \
+        LIGHTRAY_PP_VARIADIC_FOR_EACH(_LIGHTRAY_REFL_EXTRA_EACH, none, LIGHTRAY_PP_EMPTY, __VA_ARGS__) \
+    ))
+
+#define _LIGHTRAY_REFL_EXTRA_EXPAND(...) __VA_ARGS__
+
+#define _LIGHTRAY_REFL_D_EXTRA_EACH(d_data, d_i, f_func) \
+    LIGHTRAY_PP_DEFER(_LIGHTRAY_REFL_EXTRA_EACH)(d_data, d_i, f_func)
+
+#define _LIGHTRAY_REFL_EXTRA_EACH(d_data, d_i, f_func) \
+    LIGHTRAY_PP_CONCAT(_LIGHTRAY_REFL_D_, f_func)
+
 
 #define _LIGHTRAY_REFL_D_DECL_PARAM(...) \
     LIGHTRAY_PP_DEFER(_LIGHTRAY_REFL_DECL_PARAM)(__VA_ARGS__)
@@ -386,7 +403,7 @@ struct _LIGHTRAY_REFL_META_TYPE(p_type, p_mangle) \
 
 #define _LIGHTRAY_REFL_DECL_MEMBER_TYPEDEF(p_member, f_extra) \
         static constexpr ::lightray::fixed_string name = LIGHTRAY_PP_STRINGIZE(p_member); \
-        static constexpr ::lightray::category category = ::lightray::category::type; \
+        static constexpr ::lightray::category category = ::lightray::category::type_definition; \
         using type = typename declaring_type::p_member;
 
 
@@ -399,7 +416,7 @@ struct _LIGHTRAY_REFL_META_TYPE(p_type, p_mangle) \
 
 #define _LIGHTRAY_REFL_DECL_MEMBER_TYPEDEF_TMPL(p_member, f_param, f_extra) \
         static constexpr ::lightray::fixed_string name = LIGHTRAY_PP_STRINGIZE(p_member); \
-        static constexpr ::lightray::category category = ::lightray::category::type_template; \
+        static constexpr ::lightray::category category = ::lightray::category::type_definition_template; \
         template <_LIGHTRAY_REFL_DECL_MEMBER_TYPEDEF_TMPL_EXPAND( \
             LIGHTRAY_PP_CONCAT(_LIGHTRAY_REFL_D_DECL_, f_param) \
         )>\
