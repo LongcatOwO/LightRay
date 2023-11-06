@@ -1,0 +1,7 @@
+project = liblightray-preprocessor
+
+using version
+using config
+using test
+using install
+using dist

@@ -1,0 +1,33 @@
+# Public headers.
+#
+pub = [dir_path] ../../../include/lightray/preprocessor/
+
+include $pub
+
+
+# Unit tests.
+#
+exe{*.test}:
+{
+  test = true
+  install = false
+}
+
+for t: cxx{**.test...}
+{
+  d = $directory($t)
+  n = $name($t)...
+
+  ./: $d/exe{$n}: $t $d/{hxx ixx txx}{**} $d/testscript{+$n} $pub/lib{lightray-preprocessor}
+}
+
+# Build options.
+#
+out_pfx = [dir_path] $out_root/include/
+src_pfx = [dir_path] $src_root/include/
+
+cxx.poptions =+ "-I$out_pfx" "-I$src_pfx"
+
+# Don't install private headers.
+#
+{hxx ixx txx}{*}: install = false

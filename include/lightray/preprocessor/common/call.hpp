@@ -1,7 +1,0 @@
-#ifndef _LIGHTRAY_PREPROCESSOR_COMMON_CALL_HPP_
-#define _LIGHTRAY_PREPROCESSOR_COMMON_CALL_HPP_
-
-#define LIGHTRAY_PP_CALL(macro, ...) _LIGHTRAY_PP_CALL(macro, __VA_ARGS__)
-#define _LIGHTRAY_PP_CALL(macro, ...) macro(__VA_ARGS__)
-
-#endif

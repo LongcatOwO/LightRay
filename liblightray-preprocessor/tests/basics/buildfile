@@ -1,0 +1,3 @@
+import libs = liblightray-preprocessor%lib{lightray-preprocessor}
+
+exe{driver}: {hxx ixx txx cxx}{**} $libs testscript{**}

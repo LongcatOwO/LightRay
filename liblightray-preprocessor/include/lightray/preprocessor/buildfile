@@ -1,0 +1,25 @@
+intf_libs = # Interface dependencies.
+
+lib{lightray-preprocessor}: {hxx ixx txx}{** -version} hxx{version} $intf_libs
+
+hxx{version}: in{version} $src_root/manifest
+
+# Export options.
+#
+out_pfx = [dir_path] $out_root/include/
+src_pfx = [dir_path] $src_root/include/
+
+lib{lightray-preprocessor}:
+{
+  cxx.export.poptions = "-I$out_pfx" "-I$src_pfx"
+  cxx.export.libs = $intf_libs
+}
+
+# Install into the lightray/preprocessor/ subdirectory of, say, /usr/include/
+# recreating subdirectories.
+#
+{hxx ixx txx}{*}:
+{
+  install         = include/lightray/preprocessor/
+  install.subdirs = true
+}
