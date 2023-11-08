@@ -8,6 +8,8 @@ and syntax unification classes.
 
 ## Examples
 
+Performing type manipulation:
+
 ```c++
 using namespace lightray::mtp;
 
@@ -17,4 +19,21 @@ auto my_tuple = type_pack<int, float, double, long>.filter([]<typename T>{
 }).apply([]<typename... Ts>{ return type<std::tuple<Ts...>>; })(42, 1000);
 ```
 
-TODO: need more examples
+Unified functional call syntax:
+
+```c++
+// member function declaration
+struct S { void f() { std::cout << "Hello, member f!\n"; } };
+
+// non-member function declaration
+void f(S&, int) { std::cout << "Hello, non-member f!\n"; }
+
+// use case
+using namespace lightray::mtp;
+function_pointer member_func = &S::f;
+function_pointer non_member_func = &f;
+overloaded o = {member_func, non_member_func};
+S s;
+o(s); // this prints "Hello, member f!\n"
+o(s, 1); // this prints "Hello, non-member f!\n"
+```
