@@ -3,6 +3,13 @@
 
 #include <lightray/preprocessor/common.hpp>
 
+/*
+ * Expands to the n-th element of the variadic arguments.
+ * If n is more than or equal to the number of variadic arguments,
+ * then this macro expands to nothing.
+ *
+ * Author: P. Lutchanont
+ */
 #define LIGHTRAY_PP_VAR_ELEM(n, ...) LIGHTRAY_PP_CAT(LIGHTRAY_PP_VAR_ELEM_, n)(__VA_ARGS__)
 
 #define LIGHTRAY_PP_VAR_ELEM_0(e, ...) e
@@ -70,6 +77,5 @@
 #define LIGHTRAY_PP_VAR_ELEM_62(e, ...) LIGHTRAY_PP_VAR_ELEM_61(__VA_ARGS__)
 #define LIGHTRAY_PP_VAR_ELEM_63(e, ...) LIGHTRAY_PP_VAR_ELEM_62(__VA_ARGS__)
 #define LIGHTRAY_PP_VAR_ELEM_64(e, ...) LIGHTRAY_PP_VAR_ELEM_63(__VA_ARGS__)
-
 
 #endif

@@ -8,6 +8,13 @@
 #include "rest_n.hpp"
 #include "size.hpp"
 
+
+/*
+ * Calls macro with the arguments (data, i, elem)) for each element in the variadic arguments,
+ * where i is the index of the current element, and elem is the current element.
+ *
+ * Author: P. Lutchanont
+ */
 #define LIGHTRAY_PP_VAR_FOR_EACH(macro, data, ...) \
   LIGHTRAY_PP_VAR_FOR_EACH_EXPAND( \
     LIGHTRAY_PP_CAT(LIGHTRAY_PP_VAR_FOR_EACH_, LIGHTRAY_PP_VAR_SIZE(__VA_ARGS__))(macro, data, 0, __VA_ARGS__) \

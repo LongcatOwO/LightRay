@@ -1,8 +1,14 @@
 #ifndef _LIGHTRAY_PREPROCESSOR_ARITHMETIC_DEC_HPP_
 #define _LIGHTRAY_PREPROCESSOR_ARITHMETIC_DEC_HPP_
 
+
 #include <lightray/preprocessor/common.hpp>
 
+/*
+ * Decrement x. x must satisfies: 1 <= x <= 256.
+ *
+ * Author: P. Lutchanont
+ */
 #define LIGHTRAY_PP_DEC(x) LIGHTRAY_PP_CAT(LIGHTRAY_PP_DEC_, x)
 
 #define LIGHTRAY_PP_DEC_1 0

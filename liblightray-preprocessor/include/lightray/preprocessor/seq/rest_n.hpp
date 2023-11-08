@@ -3,6 +3,13 @@
 
 #include <lightray/preprocessor/common.hpp>
 
+/*
+ * Removes the first n elements from seq
+ * If n is more than or equal to the number of elements in seq,
+ * then this macro expands to nothing.
+ *
+ * Author: P. Lutchanont
+ */
 #define LIGHTRAY_PP_SEQ_REST_N(n, seq) LIGHTRAY_PP_CAT(LIGHTRAY_PP_SEQ_REST_N_END_, LIGHTRAY_PP_CAT(LIGHTRAY_PP_SEQ_REST_, n) seq)
 
 #define LIGHTRAY_PP_SEQ_REST_0(...) LIGHTRAY_PP_SEQ_REST_END (__VA_ARGS__)

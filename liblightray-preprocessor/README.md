@@ -30,3 +30,20 @@ This library is specifically made to complement LightRay.Reflection,
 providing the needed utility to perform metadata generation. Note that however,
 this library is intended to be completely generic and uncoupled from any other
 libraries in the LightRay project, and can be used standalone.
+
+## Special Terms
+
+This library uses similar special terms as Boost.Preprocessor to describe
+different token constructs.
+
+For example,
+
+VAR in LightRay refers to the same construct as Boost's VARIADIC
+which is simply a comma separated tokens like: a, b, c, d, ...
+
+SEQ in LightRay refers to the same construct as Boost's SEQ (or sequence)
+which is a sequence of elements enclosed by brackets: (a)(b)(c)(d)...
+
+Although, it should be note that, for SEQ element accessors, like
+LIGHTRAY_PP_SEQ_ELEM, the macro leaves the bracket of the element intact,
+while BOOST_PP_SEQ_ELEM removes them.

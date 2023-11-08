@@ -3,6 +3,11 @@
 
 #include <lightray/preprocessor/common.hpp>
 
+/*
+ * Converts x to bool (i.e. 0 or 1). x must satisfies: 0 <= x <= 256
+ *
+ * Author: P. Lutchanont
+ */
 #define LIGHTRAY_PP_BOOL(x) LIGHTRAY_PP_CAT(LIGHTRAY_PP_BOOL_, x)
 
 #define LIGHTRAY_PP_BOOL_0 0

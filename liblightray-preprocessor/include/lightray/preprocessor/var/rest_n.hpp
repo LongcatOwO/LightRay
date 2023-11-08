@@ -3,6 +3,13 @@
 
 #include <lightray/preprocessor/common.hpp>
 
+/*
+ * Removes the first n elements from the variadic arguments.
+ * If n is more than or equal to the number of elements in the variadic arguments,
+ * then this macro expands to nothing.
+ *
+ * Author: P. Lutchanont
+ */
 #define LIGHTRAY_PP_VAR_REST_N(n, ...) LIGHTRAY_PP_CAT(LIGHTRAY_PP_VAR_REST_, n)(__VA_ARGS__)
 
 #define LIGHTRAY_PP_VAR_REST_0(...) __VA_ARGS__
@@ -70,5 +77,6 @@
 #define LIGHTRAY_PP_VAR_REST_62(e, ...) LIGHTRAY_PP_VAR_REST_61(__VA_ARGS__)
 #define LIGHTRAY_PP_VAR_REST_63(e, ...) LIGHTRAY_PP_VAR_REST_62(__VA_ARGS__)
 #define LIGHTRAY_PP_VAR_REST_64(e, ...) LIGHTRAY_PP_VAR_REST_63(__VA_ARGS__)
+
 
 #endif

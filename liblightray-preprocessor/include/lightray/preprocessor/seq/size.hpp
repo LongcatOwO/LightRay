@@ -3,6 +3,11 @@
 
 #include <lightray/preprocessor/common.hpp>
 
+/*
+ * Expands to the number of elements in seq.
+ *
+ * Author: P. Lutchanont
+ */
 #define LIGHTRAY_PP_SEQ_SIZE(seq) LIGHTRAY_PP_CAT(LIGHTRAY_PP_SEQ_SIZE_0 seq, _LIGHTRAY_PP_SEQ_SIZE_GET)
 
 #define LIGHTRAY_PP_SEQ_SIZE_0(...) LIGHTRAY_PP_SEQ_SIZE_1

@@ -3,6 +3,11 @@
 
 #include <lightray/preprocessor/common.hpp>
 
+/*
+ * Increments x. x must satisfies: 0 <= x <= 255.
+ *
+ * Author: P. Lutchanont
+ */
 #define LIGHTRAY_PP_INC(x) LIGHTRAY_PP_CAT(LIGHTRAY_PP_INC_, x)
 
 #define LIGHTRAY_PP_INC_0 1

@@ -3,6 +3,16 @@
 
 #include <lightray/preprocessor/common.hpp>
 
+/*
+ * Expands to the n-th element of the Sequence
+ * The element is still left surrounded by its bracket,
+ * contrary to Boost's implementation which removes it.
+ *
+ * If n is more than or equal to the number of elements in seq,
+ * then this macro expands to nothing.
+ *
+ * Author: P. Lutchanont
+ */
 #define LIGHTRAY_PP_SEQ_ELEM(n, seq) LIGHTRAY_PP_CAT(LIGHTRAY_PP_CAT(LIGHTRAY_PP_SEQ_ELEM_, n) seq, _LIGHTRAY_PP_SEQ_ELEM_END)
 
 

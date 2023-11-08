@@ -8,6 +8,13 @@
 #include "size.hpp"
 
 
+/*
+ * Calls macro with the arguments (data, i, seq_elem) for each element in seq,
+ * where i is the index of the current element, and seq_elem is the current 
+ * element with its bracket intact.
+ *
+ * Author: P. Lutchanont
+ */
 #define LIGHTRAY_PP_SEQ_FOR_EACH(macro, data, seq) LIGHTRAY_PP_SEQ_FOR_EACH_EXPAND(LIGHTRAY_PP_CAT(LIGHTRAY_PP_SEQ_FOR_EACH_, LIGHTRAY_PP_SEQ_SIZE(seq))(macro, data, 0, seq))
 #define LIGHTRAY_PP_SEQ_FOR_EACH_EXPAND(...) __VA_ARGS__
 
