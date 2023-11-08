@@ -11,12 +11,18 @@ namespace lightray::mtp
 {
     namespace detail
     {
+        template <typename Derived, typename ClassType, typename Return, typename... Args>
+        struct function_pointer_interface;
+
         /*
          * Author: P. Lutchanont
          */
         template <typename FuncPtr>
         struct function_pointer_base
         {
+            template <typename, typename, typename, typename...>
+            friend struct function_pointer_interface;
+
             using function_traits = traits::function_traits<FuncPtr>;
             using qualifier_traits = typename function_traits::qualifier_traits;
             using pointer_traits = traits::pointer_traits<FuncPtr>;
@@ -29,6 +35,28 @@ namespace lightray::mtp
             constexpr function_pointer_base(FuncPtr fp) noexcept : _ptr(fp) {}
 
         }; // struct function_pointer_base
+
+        template <typename Derived, typename ClassType, typename Return, typename... Args>
+        struct function_pointer_interface
+        {
+            constexpr auto operator()(ClassType self, Args... args) const
+            noexcept(noexcept((std::forward<ClassType>(self).*static_cast<const Derived*>(this)->_ptr)(std::forward<Args>(args)...)))
+            -> Return
+            {
+                return (std::forward<ClassType>(self).*static_cast<const Derived*>(this)->_ptr)(std::forward<Args>(args)...);
+            }
+        };
+
+        template <typename Derived, typename Return, typename... Args>
+        struct function_pointer_interface<Derived, void, Return, Args...>
+        {
+            constexpr auto operator()(Args... args) const
+            noexcept(noexcept(static_cast<const Derived*>(this)->_ptr(std::forward<Args>(args)...)))
+            -> Return
+            {
+                return static_cast<const Derived*>(this)->_ptr(std::forward<Args>(args)...);
+            }
+        };
 
         template <typename FuncPtr, typename ISeq>
         struct function_pointer_indexer;
@@ -43,7 +71,13 @@ namespace lightray::mtp
          && !std::is_member_pointer_v<FuncPtr>
         )
         struct function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>
-        : function_pointer_base<FuncPtr>
+        :   function_pointer_base<FuncPtr>,
+            function_pointer_interface<
+                function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>,
+                void,
+                typename traits::function_traits<FuncPtr>::return_type,
+                typename traits::function_traits<FuncPtr>::template argument_type<ArgIndices>...
+            >
         {
         private:
             using base = function_pointer_base<FuncPtr>;
@@ -51,12 +85,12 @@ namespace lightray::mtp
         public:
             using base::base;
 
-            constexpr auto operator()(typename base::function_traits::template argument_type<ArgIndices>... args) const
-            noexcept(noexcept(base::_ptr(std::forward<decltype(args)>(args)...)))
-            -> typename base::function_traits::return_type
-            {
-                return base::_ptr(std::forward<decltype(args)>(args)...);
-            }
+            using function_pointer_interface<
+                function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>,
+                void,
+                typename traits::function_traits<FuncPtr>::return_type,
+                typename traits::function_traits<FuncPtr>::template argument_type<ArgIndices>...
+            >::operator();
 
         }; // struct function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>
 
@@ -71,7 +105,23 @@ namespace lightray::mtp
          && !traits::function_traits<FuncPtr>::qualifier_traits::is_reference
         )
         struct function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>
-        : function_pointer_base<FuncPtr>
+        :   function_pointer_base<FuncPtr>,
+            function_pointer_interface<
+                function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>,
+                typename traits::function_traits<FuncPtr>::qualifier_traits::template apply_cv<
+                    typename traits::pointer_traits<FuncPtr>::class_type
+                >&,
+                typename traits::function_traits<FuncPtr>::return_type,
+                typename traits::function_traits<FuncPtr>::template argument_type<ArgIndices>...
+            >,
+            function_pointer_interface<
+                function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>,
+                typename traits::function_traits<FuncPtr>::qualifier_traits::template apply_cv<
+                    typename traits::pointer_traits<FuncPtr>::class_type
+                >&&,
+                typename traits::function_traits<FuncPtr>::return_type,
+                typename traits::function_traits<FuncPtr>::template argument_type<ArgIndices>...
+            >
         {
         private:
             using base = function_pointer_base<FuncPtr>;
@@ -82,19 +132,23 @@ namespace lightray::mtp
         public:
             using base::base;
 
-            constexpr auto operator()(cv_qualified_class_type& self, typename base::function_traits::template argument_type<ArgIndices>... args) const
-            noexcept(noexcept((self.*base::_ptr)(std::forward<decltype(args)>(args)...)))
-            -> typename base::function_traits::return_type
-            {
-                return (self.*base::_ptr)(std::forward<decltype(args)>(args)...);
-            }
+            using function_pointer_interface<
+                function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>,
+                typename traits::function_traits<FuncPtr>::qualifier_traits::template apply_cv<
+                    typename traits::pointer_traits<FuncPtr>::class_type
+                >&,
+                typename traits::function_traits<FuncPtr>::return_type,
+                typename traits::function_traits<FuncPtr>::template argument_type<ArgIndices>...
+            >::operator();
 
-            constexpr auto operator()(cv_qualified_class_type&& self, typename base::function_traits::template argument_type<ArgIndices>... args) const
-            noexcept(noexcept((std::move(self).*base::_ptr)(std::forward<decltype(args)>(args)...)))
-            -> typename base::function_traits::return_type
-            {
-                return (std::move(self).*base::_ptr)(std::forward<decltype(args)>(args)...);
-            }
+            using function_pointer_interface<
+                function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>,
+                typename traits::function_traits<FuncPtr>::qualifier_traits::template apply_cv<
+                    typename traits::pointer_traits<FuncPtr>::class_type
+                >&&,
+                typename traits::function_traits<FuncPtr>::return_type,
+                typename traits::function_traits<FuncPtr>::template argument_type<ArgIndices>...
+            >::operator();
 
         }; // struct function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>
 
@@ -109,7 +163,15 @@ namespace lightray::mtp
          && traits::function_traits<FuncPtr>::qualifier_traits::is_lvalue_reference
         )
         struct function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>
-        : function_pointer_base<FuncPtr>
+        :   function_pointer_base<FuncPtr>,
+            function_pointer_interface<
+                function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>,
+                typename traits::function_traits<FuncPtr>::qualifier_traits::template apply_cv<
+                    typename traits::pointer_traits<FuncPtr>::class_type
+                >&,
+                typename traits::function_traits<FuncPtr>::return_type,
+                typename traits::function_traits<FuncPtr>::template argument_type<ArgIndices>...
+            >
         {
         private:
             using base = function_pointer_base<FuncPtr>;
@@ -119,13 +181,15 @@ namespace lightray::mtp
 
         public:
             using base::base;
-
-            constexpr auto operator()(cv_qualified_class_type& self, typename base::function_traits::template argument_type<ArgIndices>... args) const
-            noexcept(noexcept((self.*base::_ptr)(std::forward<decltype(args)>(args)...)))
-            -> typename base::function_traits::return_type
-            {
-                return (self.*base::_ptr)(std::forward<decltype(args)>(args)...);
-            }
+            
+            using function_pointer_interface<
+                function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>,
+                typename traits::function_traits<FuncPtr>::qualifier_traits::template apply_cv<
+                    typename traits::pointer_traits<FuncPtr>::class_type
+                >&,
+                typename traits::function_traits<FuncPtr>::return_type,
+                typename traits::function_traits<FuncPtr>::template argument_type<ArgIndices>...
+            >::operator();
 
         }; // struct function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>
 
@@ -140,7 +204,15 @@ namespace lightray::mtp
          && traits::function_traits<FuncPtr>::qualifier_traits::is_rvalue_reference
         )
         struct function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>
-        : function_pointer_base<FuncPtr>
+        :   function_pointer_base<FuncPtr>,
+            function_pointer_interface<
+                function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>,
+                typename traits::function_traits<FuncPtr>::qualifier_traits::template apply_cv<
+                    typename traits::pointer_traits<FuncPtr>::class_type
+                >&&,
+                typename traits::function_traits<FuncPtr>::return_type,
+                typename traits::function_traits<FuncPtr>::template argument_type<ArgIndices>...
+            >
         {
         private:
             using base = function_pointer_base<FuncPtr>;
@@ -151,12 +223,14 @@ namespace lightray::mtp
         public:
             using base::base;
 
-            constexpr auto operator()(cv_qualified_class_type&& self, typename base::function_traits::template argument_type<ArgIndices>... args) const
-            noexcept(noexcept((std::move(self).*base::_ptr)(std::forward<decltype(args)>(args)...)))
-            -> typename base::function_traits::return_type
-            {
-                return (std::move(self).*base::_ptr)(std::forward<decltype(args)>(args)...);
-            }
+            using function_pointer_interface<
+                function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>,
+                typename traits::function_traits<FuncPtr>::qualifier_traits::template apply_cv<
+                    typename traits::pointer_traits<FuncPtr>::class_type
+                >&&,
+                typename traits::function_traits<FuncPtr>::return_type,
+                typename traits::function_traits<FuncPtr>::template argument_type<ArgIndices>...
+            >::operator();
 
         }; // struct function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>
 

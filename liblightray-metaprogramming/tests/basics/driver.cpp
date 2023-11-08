@@ -24,4 +24,5 @@ auto main() -> int
     S s;
     o(s);
     o(s, 1);
+    o(S{});
 }
