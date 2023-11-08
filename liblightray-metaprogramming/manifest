@@ -1,0 +1,14 @@
+: 1
+name: liblightray-metaprogramming
+version: 0.1.0-a.0.z
+type: lib,binless
+language: c++
+project: LightRay
+summary: lightray-metaprogramming C++ library for general purpose template metaprogramming.
+license: other: TODO
+description-file: README.md
+url: https://example.org/LightRay
+email: greatphu@gmail.com
+#build-error-email: greatphu@gmail.com
+depends: * build2 >= 0.16.0
+depends: * bpkg >= 0.16.0

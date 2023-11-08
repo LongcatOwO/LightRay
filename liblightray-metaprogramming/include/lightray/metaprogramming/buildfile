@@ -1,0 +1,26 @@
+intf_libs = # Interface dependencies.
+#import xxxx_libs += libhello%lib{hello}
+
+lib{lightray-metaprogramming}: {hxx ixx txx}{** -version} hxx{version} $intf_libs
+
+hxx{version}: in{version} $src_root/manifest
+
+# Export options.
+#
+out_pfx = [dir_path] $out_root/include/
+src_pfx = [dir_path] $src_root/include/
+
+lib{lightray-metaprogramming}:
+{
+  cxx.export.poptions = "-I$out_pfx" "-I$src_pfx"
+  cxx.export.libs = $intf_libs
+}
+
+# Install into the lightray/metaprogramming/ subdirectory of, say, /usr/include/
+# recreating subdirectories.
+#
+{hxx ixx txx}{*}:
+{
+  install         = include/lightray/metaprogramming/
+  install.subdirs = true
+}

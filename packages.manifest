@@ -1,2 +1,5 @@
 : 1
 location: liblightray-preprocessor/
+
+:
+location: liblightray-metaprogramming/
