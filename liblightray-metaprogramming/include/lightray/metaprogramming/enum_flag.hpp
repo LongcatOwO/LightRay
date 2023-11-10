@@ -1,51 +1,47 @@
 #pragma once
 
-#include <concepts>
-#include <type_traits>
-#include <utility>
+#include "enum_util.hpp"
 
-namespace lightray::mtp
+// Enum flag bitwise XOR operator.
+// Participates in overload resolution only if Enum is an enum_flag_type.
+template <lightray::mtp::enum_flag_type Enum> 
+constexpr auto operator^ (Enum lhs, Enum rhs) noexcept -> Enum
 {
-    template <typename T>
-    concept enum_type = std::is_enum_v<T>;
-
-    template <typename T>
-    concept enum_flag_type = enum_type<T> && requires (const T& t) { lightray_mtp_enum_flag(t); };
-
-    template <enum_type To, std::same_as<std::underlying_type_t<To>> From>
-    constexpr auto enum_cast(const From& from) noexcept -> To
-    {
-        return static_cast<To>(from);
-    }
-
-} // namespace lightray::mtp
-
-template <lightray::mtp::enum_flag_type T> 
-constexpr auto operator^ (const T& lhs, const T& rhs) noexcept -> T
-{
-    return lightray::mtp::enum_cast<T>(std::to_underlying(lhs) ^ std::to_underlying(rhs));
+    namespace lr = lightray::mtp;
+    return lr::enum_cast<Enum>(lr::to_underlying(lhs), lr::to_underlying(rhs));
 }
 
-template <lightray::mtp::enum_flag_type T>
-constexpr auto operator& (const T& lhs, const T& rhs) noexcept -> T
+// Enum flag bitwise AND operator.
+// Participates in overload resolution only if Enum is an enum_flag_type.
+template <lightray::mtp::enum_flag_type Enum>
+constexpr auto operator& (Enum lhs, Enum rhs) noexcept -> Enum
 {
-    return lightray::mtp::enum_cast<T>(std::to_underlying(lhs) & std::to_underlying(rhs));
+    namespace lr = lightray::mtp;
+    return lr::enum_cast<Enum>(lr::to_underlying(lhs) & lr::to_underlying(rhs));
 }
 
-template <lightray::mtp::enum_flag_type T>
-constexpr auto operator| (const T& lhs, const T& rhs) noexcept -> T
+// Enum flag bitwise OR operator
+// Participates in overload resolution only if Enum is an enum_flag_type.
+template <lightray::mtp::enum_flag_type Enum>
+constexpr auto operator| (Enum lhs, Enum rhs) noexcept -> Enum
 {
-    return lightray::mtp::enum_cast<T>(std::to_underlying(lhs) | std::to_underlying(rhs));
+    namespace lr = lightray::mtp;
+    return lr::enum_cast<Enum>(lr::to_underlying(lhs) | lr::to_underlying(rhs));
 }
 
-template <lightray::mtp::enum_flag_type T>
-constexpr auto operator~ (const T& t) noexcept -> T
+// Enum flag bitwise NOT operator
+// Participates in overload resolution only if Enum is an enum_flag_type.
+template <lightray::mtp::enum_flag_type Enum>
+constexpr auto operator~ (Enum e) noexcept -> Enum
 {
-    return lightray::mtp::enum_cast<T>(~std::to_underlying(t));
+    namespace lr = lightray::mtp;
+    return lr::enum_cast<Enum>(~lr::to_underlying(e));
 }
 
-template <lightray::mtp::enum_flag_type T>
-constexpr auto has_flag(const T& flags, const T& flags_to_check) noexcept -> bool
+// True if all bit fields in flags_to_check are also set in flags.
+// Otherwise, false.
+template <lightray::mtp::enum_flag_type Enum>
+constexpr auto has_flag(Enum flags, Enum flags_to_check) noexcept -> bool
 {
     return (flags & flags_to_check) == flags_to_check;
 }

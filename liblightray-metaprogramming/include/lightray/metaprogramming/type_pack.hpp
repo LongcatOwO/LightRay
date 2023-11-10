@@ -3,6 +3,8 @@
 #include <cstddef>
 #include <utility>
 
+#include <lightray/metaprogramming/concepts/functor.hpp>
+
 #include "type.hpp"
 #include "value.hpp"
 
@@ -89,9 +91,10 @@ namespace lightray::mtp
          *  type_pack<float, int, double>.find_if([]<typename T>{ return std::is_integral<T>{}; });
          */
         template <typename Predicate>
+        requires (... && concepts::type_to_value_functor<Predicate, bool, Ts>)
         static constexpr auto find_if(Predicate&& p) noexcept -> auto
         {
-            const auto impl = [&]<auto I>(auto self, value_t<I>)
+            const auto impl = [&]<auto I> (auto self, value_t<I>)
             {
                 if constexpr (I < size())
                 {
@@ -128,6 +131,7 @@ namespace lightray::mtp
          *  type_pack<float, int, double, char>.filter([]<typename T>{ return std::is_floating_point<T>{}; });
          */
         template <typename Predicate>
+        requires (... && concepts::type_to_value_functor<Predicate, bool, Ts>)
         static constexpr auto filter(Predicate&& p) noexcept -> auto
         {
             const auto decide = [&]<typename T>(type_t<T> type)
@@ -181,9 +185,8 @@ namespace lightray::mtp
          * For example:
          *  type_pack<int, float, char>.for_each([]<typename T>{ std::cout << typeid(T).name() << '\n'; });
          */
-        template <typename Fn>
-        static constexpr auto for_each(Fn&& fn)
-        noexcept(noexcept((std::forward<Fn>(fn).template operator()<Ts>(), ...)))
+        template <typename Fn> requires (... && concepts::type_functor<Fn, Ts>)
+        static constexpr auto for_each(Fn&& fn) noexcept((... && concepts::nothrow_type_functor<Fn, Ts>))
         -> void
         {
             (std::forward<Fn>(fn).template operator()<Ts>(), ...);
@@ -204,9 +207,8 @@ namespace lightray::mtp
          *
          * The result of the invocation of fn is perfect forwarded.
          */
-        template <typename Fn>
-        static constexpr auto apply(Fn&& fn)
-        noexcept(noexcept(std::forward<Fn>(fn).template operator()<Ts...>()))
+        template <concepts::type_functor<Ts...> Fn>
+        static constexpr auto apply(Fn&& fn) noexcept(concepts::nothrow_type_functor<Fn, Ts...>)
         -> decltype(auto)
         {
             return std::forward<Fn>(fn).template operator()<Ts...>();
@@ -232,7 +234,7 @@ namespace lightray::mtp
          *  // this returns type_pack<const int, const long, const char>
          *  type_pack<int, long, char>.transform([]<typename T>{ return type<const T>; });
          */
-        template <typename Fn>
+        template <typename Fn> requires (... && concepts::type_to_type_functor<Fn, Ts>)
         static constexpr auto transform(Fn&& fn) noexcept -> auto
         {
             return type_pack_t<typename decltype(std::forward<Fn>(fn).template operator()<Ts>())::type...>{};

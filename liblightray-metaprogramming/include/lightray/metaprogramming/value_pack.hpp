@@ -2,6 +2,8 @@
 
 #include <utility>
 
+#include <lightray/metaprogramming/concepts/functor.hpp>
+
 #include "value.hpp"
 
 namespace lightray::mtp
@@ -96,6 +98,7 @@ namespace lightray::mtp
          *  value_pack<1, 3, 5, 7, 8, 9>.find_if([]<auto V>{ return value<V % 2 == 0>; });
          */
         template <bool wrapped = false, typename Predicate>
+        requires (... && concepts::value_to_value_functor<Predicate, bool, Vs>)
         static constexpr auto find_if(Predicate&& p) noexcept -> auto
         {
             const auto impl = [&]<auto I>(auto self, value_t<I>)
@@ -134,6 +137,7 @@ namespace lightray::mtp
          *  value_pack<0, 1, 2, 3, 4, 5, 6, 7, 8, 9>.filter([]<auto V>{ return value<V % 3 == 0>; });
          */
         template <typename Predicate>
+        requires (... && concepts::value_to_value_functor<Predicate, bool, Vs>)
         static constexpr auto filter(Predicate&& p) noexcept -> auto
         {
             const auto decide = [&]<auto V>(value_t<V>)
@@ -188,9 +192,8 @@ namespace lightray::mtp
          * For example:
          *  value_pack<'c', 'a', 't'>.for_each([]<auto V>{ std::cout << V; });
          */
-        template <typename Fn>
-        static constexpr auto for_each(Fn&& fn)
-        noexcept(noexcept((std::forward<Fn>(fn).template operator()<Vs>(), ...)))
+        template <typename Fn> requires (... && concepts::value_functor<Fn, Vs>)
+        static constexpr auto for_each(Fn&& fn) noexcept((... && concepts::nothrow_value_functor<Fn, Vs>))
         -> void
         {
             (std::forward<Fn>(fn).template operator()<Vs>(), ...);
@@ -211,9 +214,8 @@ namespace lightray::mtp
          *
          * The result of the invocation of fn is perfect forwarded.
          */
-        template <typename Fn>
-        static constexpr auto apply(Fn&& fn)
-        noexcept(noexcept(std::forward<Fn>(fn).template operator()<Vs...>()))
+        template <concepts::value_functor<Vs...> Fn>
+        static constexpr auto apply(Fn&& fn) noexcept(concepts::nothrow_value_functor<Fn, Vs...>)
         -> decltype(auto)
         {
             return std::forward<Fn>(fn).template operator()<Vs...>();
@@ -240,7 +242,7 @@ namespace lightray::mtp
          *  // this returns value_pack<2, 4, 6, 8, 10>
          *  value_pack<1, 2, 3, 4, 5>.transform([]<auto V>{ return value<V * 2>; });
          */
-        template <typename Fn>
+        template <typename Fn> requires (... && concepts::value_to_value_functor<Fn, concepts::auto_t, Vs>)
         static constexpr auto transform(Fn&& fn) noexcept -> auto
         {
             return value_pack_t<decltype(std::forward<Fn>(fn).template operator()<Vs>())::value...>{};

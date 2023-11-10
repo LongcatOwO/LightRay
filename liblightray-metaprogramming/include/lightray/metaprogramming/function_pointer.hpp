@@ -4,7 +4,7 @@
 #include <utility>
 
 #include <lightray/metaprogramming/traits/function_traits.hpp>
-#include <lightray/metaprogramming/traits/pointer_traits.hpp>
+#include <lightray/metaprogramming/traits/unified_pointer_traits.hpp>
 
 
 namespace lightray::mtp
@@ -25,7 +25,7 @@ namespace lightray::mtp
 
             using function_traits = traits::function_traits<FuncPtr>;
             using qualifier_traits = typename function_traits::qualifier_traits;
-            using pointer_traits = traits::pointer_traits<FuncPtr>;
+            using pointer_traits = traits::unified_pointer_traits<FuncPtr>;
 
         protected:
             FuncPtr _ptr;
@@ -67,7 +67,7 @@ namespace lightray::mtp
         template <typename FuncPtr, std::size_t... ArgIndices>
         requires 
         (
-            std::is_function_v<typename traits::pointer_traits<FuncPtr>::element_type>
+            std::is_function_v<typename traits::unified_pointer_traits<FuncPtr>::element_type>
          && !std::is_member_pointer_v<FuncPtr>
         )
         struct function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>
@@ -100,7 +100,7 @@ namespace lightray::mtp
         template <typename FuncPtr, std::size_t... ArgIndices>
         requires
         (
-            std::is_function_v<typename traits::pointer_traits<FuncPtr>::element_type>
+            std::is_function_v<typename traits::unified_pointer_traits<FuncPtr>::element_type>
          && std::is_member_pointer_v<FuncPtr>
          && !traits::function_traits<FuncPtr>::qualifier_traits::is_reference
         )
@@ -109,7 +109,7 @@ namespace lightray::mtp
             function_pointer_interface<
                 function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>,
                 typename traits::function_traits<FuncPtr>::qualifier_traits::template apply_cv<
-                    typename traits::pointer_traits<FuncPtr>::class_type
+                    typename traits::unified_pointer_traits<FuncPtr>::class_type
                 >&,
                 typename traits::function_traits<FuncPtr>::return_type,
                 typename traits::function_traits<FuncPtr>::template argument_type<ArgIndices>...
@@ -117,7 +117,7 @@ namespace lightray::mtp
             function_pointer_interface<
                 function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>,
                 typename traits::function_traits<FuncPtr>::qualifier_traits::template apply_cv<
-                    typename traits::pointer_traits<FuncPtr>::class_type
+                    typename traits::unified_pointer_traits<FuncPtr>::class_type
                 >&&,
                 typename traits::function_traits<FuncPtr>::return_type,
                 typename traits::function_traits<FuncPtr>::template argument_type<ArgIndices>...
@@ -135,7 +135,7 @@ namespace lightray::mtp
             using function_pointer_interface<
                 function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>,
                 typename traits::function_traits<FuncPtr>::qualifier_traits::template apply_cv<
-                    typename traits::pointer_traits<FuncPtr>::class_type
+                    typename traits::unified_pointer_traits<FuncPtr>::class_type
                 >&,
                 typename traits::function_traits<FuncPtr>::return_type,
                 typename traits::function_traits<FuncPtr>::template argument_type<ArgIndices>...
@@ -144,7 +144,7 @@ namespace lightray::mtp
             using function_pointer_interface<
                 function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>,
                 typename traits::function_traits<FuncPtr>::qualifier_traits::template apply_cv<
-                    typename traits::pointer_traits<FuncPtr>::class_type
+                    typename traits::unified_pointer_traits<FuncPtr>::class_type
                 >&&,
                 typename traits::function_traits<FuncPtr>::return_type,
                 typename traits::function_traits<FuncPtr>::template argument_type<ArgIndices>...
@@ -158,7 +158,7 @@ namespace lightray::mtp
         template <typename FuncPtr, std::size_t... ArgIndices>
         requires
         (
-            std::is_function_v<typename traits::pointer_traits<FuncPtr>::element_type>
+            std::is_function_v<typename traits::unified_pointer_traits<FuncPtr>::element_type>
          && std::is_member_pointer_v<FuncPtr>
          && traits::function_traits<FuncPtr>::qualifier_traits::is_lvalue_reference
         )
@@ -167,7 +167,7 @@ namespace lightray::mtp
             function_pointer_interface<
                 function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>,
                 typename traits::function_traits<FuncPtr>::qualifier_traits::template apply_cv<
-                    typename traits::pointer_traits<FuncPtr>::class_type
+                    typename traits::unified_pointer_traits<FuncPtr>::class_type
                 >&,
                 typename traits::function_traits<FuncPtr>::return_type,
                 typename traits::function_traits<FuncPtr>::template argument_type<ArgIndices>...
@@ -185,7 +185,7 @@ namespace lightray::mtp
             using function_pointer_interface<
                 function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>,
                 typename traits::function_traits<FuncPtr>::qualifier_traits::template apply_cv<
-                    typename traits::pointer_traits<FuncPtr>::class_type
+                    typename traits::unified_pointer_traits<FuncPtr>::class_type
                 >&,
                 typename traits::function_traits<FuncPtr>::return_type,
                 typename traits::function_traits<FuncPtr>::template argument_type<ArgIndices>...
@@ -199,7 +199,7 @@ namespace lightray::mtp
         template <typename FuncPtr, std::size_t... ArgIndices>
         requires
         (
-            std::is_function_v<typename traits::pointer_traits<FuncPtr>::element_type>
+            std::is_function_v<typename traits::unified_pointer_traits<FuncPtr>::element_type>
          && std::is_member_pointer_v<FuncPtr>
          && traits::function_traits<FuncPtr>::qualifier_traits::is_rvalue_reference
         )
@@ -208,7 +208,7 @@ namespace lightray::mtp
             function_pointer_interface<
                 function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>,
                 typename traits::function_traits<FuncPtr>::qualifier_traits::template apply_cv<
-                    typename traits::pointer_traits<FuncPtr>::class_type
+                    typename traits::unified_pointer_traits<FuncPtr>::class_type
                 >&&,
                 typename traits::function_traits<FuncPtr>::return_type,
                 typename traits::function_traits<FuncPtr>::template argument_type<ArgIndices>...
@@ -226,7 +226,7 @@ namespace lightray::mtp
             using function_pointer_interface<
                 function_pointer_indexer<FuncPtr, std::index_sequence<ArgIndices...>>,
                 typename traits::function_traits<FuncPtr>::qualifier_traits::template apply_cv<
-                    typename traits::pointer_traits<FuncPtr>::class_type
+                    typename traits::unified_pointer_traits<FuncPtr>::class_type
                 >&&,
                 typename traits::function_traits<FuncPtr>::return_type,
                 typename traits::function_traits<FuncPtr>::template argument_type<ArgIndices>...
@@ -268,7 +268,7 @@ namespace lightray::mtp
      * Author: P. Lutchanont
      */
     template <typename FuncPtr>
-    requires std::is_function_v<typename traits::pointer_traits<FuncPtr>::element_type>
+    requires std::is_function_v<typename traits::unified_pointer_traits<FuncPtr>::element_type>
     struct function_pointer
     :   detail::function_pointer_indexer<
             FuncPtr, 

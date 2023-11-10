@@ -5,6 +5,7 @@
 
 #include <lightray/metaprogramming/traits/qualifier_traits.hpp>
 
+#include "cast.hpp"
 #include "type_pack.hpp"
 #include "value_pack.hpp"
 
@@ -19,23 +20,23 @@ namespace lightray::mtp
         template <auto Key, typename T>
         struct dict_tuple_leaf
         {
-            using element_type = T;
         private:
-            T elem;
+            using element_type = T;
+
+            T _item;
 
         public:
             dict_tuple_leaf() = default;
 
-            template <typename... Args>
-            constexpr dict_tuple_leaf(Args&&... args)
-            noexcept(noexcept(T(std::forward<Args>(args)...)))
-            : elem(std::forward<Args>(args)...)
+            template <typename U>
+            constexpr dict_tuple_leaf(U&& u) noexcept(noexcept(T(std::forward<U>(u))))
+            : _item(std::forward<U>(u))
             {}
 
-            constexpr auto get()       &  noexcept -> decltype(auto) { return (elem); }
-            constexpr auto get() const &  noexcept -> decltype(auto) { return (elem); }
-            constexpr auto get()       && noexcept -> decltype(auto) { return std::move(elem); }
-            constexpr auto get() const && noexcept -> decltype(auto) { return std::move(elem); }
+            constexpr auto get()       &  noexcept ->       T&  { return                 _item ; }
+            constexpr auto get() const &  noexcept -> const T&  { return                 _item ; }
+            constexpr auto get()       && noexcept ->       T&& { return cast<      T&&>(_item); }
+            constexpr auto get() const && noexcept -> const T&& { return cast<const T&&>(_item); }
         }; // struct dict_tuple_leaf
 
         template <auto Key, typename T>
@@ -48,12 +49,10 @@ namespace lightray::mtp
         template <auto Key, typename Leaf>
         constexpr auto dict_tuple_get_leaf(Leaf&& leaf) noexcept -> decltype(auto)
         {
-            using qualifier_traits = traits::qualifier_traits<Leaf&&>;
             using unqualified_leaf_type = std::remove_cvref_t<
                 decltype(dict_tuple_resolve_leaf_type<Key>(leaf))
             >;
-            using qualified_leaf_type = typename qualifier_traits::template apply<unqualified_leaf_type>;
-            return static_cast<qualified_leaf_type>(leaf);
+            return private_forward_cast<unqualified_leaf_type>(std::forward<Leaf>(leaf));
         }
 
     } // namespace detail
@@ -72,7 +71,7 @@ namespace lightray::mtp
     {
     private:
         template <auto Key, typename Leaf>
-        friend constexpr auto detail::dict_tuple_get_leaf(Leaf&&) noexcept -> decltype(auto);
+        friend constexpr auto detail::dict_tuple_get_leaf(Leaf&& leaf) noexcept -> decltype(auto);
 
         template <auto Key>
         using leaf_type = typename std::remove_cvref_t<

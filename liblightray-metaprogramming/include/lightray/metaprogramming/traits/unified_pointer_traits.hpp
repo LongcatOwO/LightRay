@@ -37,24 +37,24 @@ namespace lightray::mtp::traits
      * Author: P. Lutchanont
      */
     template <typename T>
-    struct pointer_traits {};
+    struct unified_pointer_traits {};
 
     template <typename T>
-    struct pointer_traits<T*>
+    struct unified_pointer_traits<T*>
     {
         using pointer_type = T*;
         using element_type = T;
         using class_type = void;
 
-    }; // struct pointer_traits<T*>
+    }; // struct unified_pointer_traits<T*>
 
     template <typename T, typename C>
-    struct pointer_traits<T C::*>
+    struct unified_pointer_traits<T C::*>
     {
         using pointer_type = T C::*;
         using element_type = T;
         using class_type = C;
 
-    }; // struct pointer_traits<T C::*>
+    }; // struct unified_pointer_traits<T C::*>
 
 } // namespace lightray::mtp::traits

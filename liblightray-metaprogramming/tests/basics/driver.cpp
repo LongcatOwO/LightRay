@@ -6,6 +6,7 @@
 #include <lightray/metaprogramming/function_pointer.hpp>
 #include <lightray/metaprogramming/type_pack.hpp>
 #include <lightray/metaprogramming/type.hpp>
+#include <lightray/metaprogramming/cast.hpp>
 
 
 struct S { void f() { std::cout << "Hello, member f!\n"; } };
@@ -25,4 +26,9 @@ auto main() -> int
     o(s);
     o(s, 1);
     o(S{});
+
+    struct S {};
+    struct T : private S {};
+    decltype(auto) test = lightray::mtp::private_forward_cast<S>(T{});
+    decltype(auto) test2 = lightray::mtp::private_forward_cast<T>(S{});
 }

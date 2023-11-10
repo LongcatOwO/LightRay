@@ -3,6 +3,8 @@
 #include <concepts>
 #include <utility>
 
+#include <lightray/metaprogramming/concepts/functor.hpp>
+
 namespace lightray::mtp
 {
     /*
@@ -53,11 +55,9 @@ namespace lightray::mtp
          *
          * The result of the invocation of fn is perfect forwarded.
          */
-        template <typename Fn>
-        requires requires (Fn&& fn) { std::forward<Fn>(fn).template operator()<T>(); }
-        static constexpr auto transform(Fn&& fn)
-        noexcept(noexcept(std::forward<Fn>(fn).template operator()<T>()))
-        -> decltype(auto) { return std::forward<Fn>(fn).template operator()<T>(); }
+        template <concepts::type_functor<type> Fn>
+        static constexpr auto transform(Fn&& fn) noexcept(concepts::nothrow_type_functor<Fn, type>)
+        -> decltype(auto) { return std::forward<Fn>(fn).template operator()<type>(); }
 
         /*
          * Same as transform.

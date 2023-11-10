@@ -176,6 +176,10 @@ namespace lightray::mtp::traits
         // Otherwise, false.
         static constexpr auto is_rvalue_reference = std::is_rvalue_reference_v<T>;
 
+        static constexpr auto is_qualified = is_const || is_volatile || is_reference;
+
+        static constexpr auto is_unqualified = !is_qualified;
+
         // If is_const is true, add const qualifier to U. Otherwise, do nothing.
         template <typename U>
         using apply_const = set_const_t<is_const, U>;
@@ -205,12 +209,25 @@ namespace lightray::mtp::traits
         template <typename U>
         requires
         (
-            is_const == qualifier_traits<U>::is_const
-         && is_volatile == qualifier_traits<U>::is_volatile
+            is_const            == qualifier_traits<U>::is_const
+         && is_volatile         == qualifier_traits<U>::is_volatile
          && is_lvalue_reference == qualifier_traits<U>::is_lvalue_reference
          && is_rvalue_reference == qualifier_traits<U>::is_rvalue_reference
         )
         constexpr operator qualifier_traits<U>() const noexcept { return {}; }
+
+        template <typename U>
+        constexpr auto operator==(qualifier_traits<U>) const noexcept -> bool { return false; }
+
+        template <typename U>
+        requires
+        (
+            is_const            == qualifier_traits<U>::is_const
+         && is_volatile         == qualifier_traits<U>::is_volatile
+         && is_lvalue_reference == qualifier_traits<U>::is_lvalue_reference
+         && is_rvalue_reference == qualifier_traits<U>::is_rvalue_reference
+        )
+        constexpr auto operator==(qualifier_traits<U>) const noexcept -> bool { return true; }
 
     }; // struct qualifier_traits
 
