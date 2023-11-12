@@ -1,0 +1,9 @@
+#ifndef _LIGHTRAY_PREPROCESSOR_TUP_SIZE_HPP_
+#define _LIGHTRAY_PREPROCESSOR_TUP_SIZE_HPP_
+
+#include <lightray/preprocessor/var/size.hpp>
+
+#define LIGHTRAY_PP_TUP_SIZE(tup) LIGHTRAY_PP_VAR_SIZE(LIGHTRAY_PP_TUP_SIZE_EXPAND tup)
+#define LIGHTRAY_PP_TUP_SIZE_EXPAND(...) __VA_ARGS__
+
+#endif

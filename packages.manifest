@@ -3,3 +3,6 @@ location: liblightray-preprocessor/
 
 :
 location: liblightray-metaprogramming/
+
+:
+location: liblightray-reflection/

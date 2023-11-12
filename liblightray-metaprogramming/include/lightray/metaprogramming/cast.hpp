@@ -37,6 +37,26 @@ namespace lightray::mtp
         return static_cast<To>(from);
     }
 
+    template <typename To, typename From>
+    requires public_base_or_derived_of<std::remove_cvref_t<To>, std::remove_cvref_t<From>>
+    constexpr auto ldefault_cast(From&& from) noexcept -> decltype(auto)
+    {
+        if constexpr (std::is_reference_v<To>)
+            return cast<To>(std::forward<From>(from));
+        else
+            return cast<std::add_lvalue_reference_t<To>>(std::forward<From>(from));
+    }
+
+    template <typename To, typename From>
+    requires public_base_or_derived_of<std::remove_cvref_t<To>, std::remove_cvref_t<From>>
+    constexpr auto rdefault_cast(From&& from) noexcept -> decltype(auto)
+    {
+        if constexpr (std::is_reference_v<To>)
+            return cast<To>(std::forward<From>(from));
+        else
+            return cast<std::add_rvalue_reference_t<To>>(std::forward<From>(from));
+    }
+
     template <typename To, base_or_derived_of<To> From>
     requires
         std::is_reference_v<To>

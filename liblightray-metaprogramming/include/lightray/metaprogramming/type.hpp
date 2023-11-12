@@ -29,7 +29,7 @@ namespace lightray::mtp
         requires std::constructible_from<type, Args&&...>
         static constexpr auto construct(Args&&... args)
         noexcept(noexcept(type(std::forward<Args>(args)...)))
-        -> auto { return type(std::forward<Args>(args)...); }
+        -> type { return type(std::forward<Args>(args)...); }
 
         /*
          * Same as calling construct.
@@ -69,10 +69,25 @@ namespace lightray::mtp
 
     }; // struct type_t
 
+    template <typename T, typename U>
+    constexpr auto operator==(type_t<T>, type_t<U>) noexcept -> bool
+    {
+        return std::same_as<T, U>;
+    }
+
     /*
      * Equals to type_t<T>{}.
      */
     template <typename T>
     constexpr auto type = type_t<T>{};
+
+    namespace splice::type
+    {
+        template <auto V>
+        using decl_t = typename decltype(V)::type;
+
+        template <typename T>
+        using _t = typename T::type;
+    }
 
 } // namespace lightray::mtp

@@ -6,25 +6,25 @@
 namespace lightray::mtp::functors
 {
     template <template <typename...> class Trait>
-    constexpr auto from_t2t_trait = []<typename... Args>
+    constexpr auto t2t_trait_func = []<typename... Args>
     {
         return type<typename Trait<Args...>::type>;
     };
 
     template <template <typename...> class Trait>
-    constexpr auto from_t2v_trait = []<typename... Args>
+    constexpr auto t2v_trait_func = []<typename... Args>
     {
         return value<Trait<Args...>::value>;
     };
 
     template <template <auto...> class Trait>
-    constexpr auto from_v2t_trait = []<auto... Args>
+    constexpr auto v2t_trait_func = []<auto... Args>
     {
         return type<typename Trait<Args...>::type>;
     };
 
     template <template <auto...> class Trait>
-    constexpr auto from_v2v_trait = []<auto... Args>
+    constexpr auto v2v_trait_func = []<auto... Args>
     {
         return value<Trait<Args...>::value>;
     };

@@ -1,0 +1,6 @@
+$out_root/
+{
+  include include/lightray/reflection/
+}
+
+export $out_root/include/lightray/reflection/$import.target

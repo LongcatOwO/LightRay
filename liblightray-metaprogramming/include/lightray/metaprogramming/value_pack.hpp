@@ -4,6 +4,7 @@
 
 #include <lightray/metaprogramming/concepts/functor.hpp>
 
+#include "tags.hpp"
 #include "value.hpp"
 
 namespace lightray::mtp
@@ -242,7 +243,7 @@ namespace lightray::mtp
          *  // this returns value_pack<2, 4, 6, 8, 10>
          *  value_pack<1, 2, 3, 4, 5>.transform([]<auto V>{ return value<V * 2>; });
          */
-        template <typename Fn> requires (... && concepts::value_to_value_functor<Fn, concepts::auto_t, Vs>)
+        template <typename Fn> requires (... && concepts::value_to_value_functor<Fn, auto_t, Vs>)
         static constexpr auto transform(Fn&& fn) noexcept -> auto
         {
             return value_pack_t<decltype(std::forward<Fn>(fn).template operator()<Vs>())::value...>{};

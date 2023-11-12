@@ -31,6 +31,11 @@ namespace lightray::mtp
          */
         static constexpr auto get() noexcept -> auto { return value; }
 
+        constexpr operator type() const noexcept(noexcept(type{value}))
+        {
+            return value;
+        }
+
         /*
          * Transform this value_t using fn.
          * Fn must be a functor with the following signature:
@@ -65,6 +70,12 @@ namespace lightray::mtp
      */
     template <auto V>
     constexpr auto value = value_t<V>{};
+
+    using true_t = value_t<true>;
+    constexpr auto true_ = value<true>;
+
+    using false_t = value_t<false>;
+    constexpr auto false_ = value<false>;
 
     /*
      * Returns value_t<+V>{}.

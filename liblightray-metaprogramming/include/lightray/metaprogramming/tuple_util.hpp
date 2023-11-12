@@ -19,7 +19,7 @@ namespace lightray::mtp
         })
     )
     constexpr auto tuple_filter(Tuple&& t, IndexPred&& p)
-    ->  decltype(
+    ->  typename decltype(
             make_index_sequence<std::tuple_size_v<std::remove_cvref_t<Tuple>>>
             .filter(std::forward<IndexPred>(p))
             .apply([]<std::size_t... Indices>{ 
@@ -44,7 +44,7 @@ namespace lightray::mtp
         })
     )
     constexpr auto tuple_find_if(Tuple&& t, IndexPred&& p)
-    ->  decltype(
+    ->  typename decltype(
             make_index_sequence<std::tuple_size_v<std::remove_cvref_t<Tuple>>>
             .template find_if<true>(std::forward<IndexPred>(p))
             .map([]<std::size_t Index>{ return std::tuple_element<Index, std::remove_cvref_t<Tuple>>{}; })

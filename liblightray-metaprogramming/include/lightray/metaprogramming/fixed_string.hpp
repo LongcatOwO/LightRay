@@ -107,9 +107,14 @@ namespace lightray::mtp
             return _data.data();
         }
 
+        constexpr auto view() const noexcept
+        {
+            return std::basic_string_view<CharT, Traits>{_data.begin(), _data.end()};
+        }
+
         constexpr operator std::basic_string_view<CharT, Traits>() const noexcept
         {
-            return {_data.begin(), _data.end()};
+            return view();
         }
 
         constexpr auto begin() noexcept -> iterator
@@ -129,47 +134,47 @@ namespace lightray::mtp
 
         constexpr auto end() noexcept -> iterator
         {
-            return end(_data);
+            return _data.end();
         }
 
         constexpr auto end() const noexcept -> const_iterator
         {
-            return end(_data);
+            return _data.end();
         }
 
         constexpr auto cend() const noexcept -> const_iterator
         {
-            return cend(_data);
+            return _data.cend();
         }
 
         constexpr auto rbegin() noexcept -> reverse_iterator
         {
-            return rbegin(_data);
+            return _data.rbegin();
         }
 
         constexpr auto rbegin() const noexcept -> const_reverse_iterator
         {
-            return rbegin(_data);
+            return _data.rbegin();
         }
 
         constexpr auto crbegin() const noexcept -> const_reverse_iterator
         {
-            return crbegin(_data);
+            return _data.crbegin();
         }
 
         constexpr auto rend() noexcept -> reverse_iterator
         {
-            return rend(_data);
+            return _data.rend();
         }
 
         constexpr auto rend() const noexcept -> const_reverse_iterator
         {
-            return rend(_data);
+            return _data.rend();
         }
 
         constexpr auto crend() const noexcept -> const_reverse_iterator
         {
-            return crend(_data);
+            return _data.crend();
         }
 
         constexpr auto empty() const noexcept -> bool
@@ -187,25 +192,25 @@ namespace lightray::mtp
             return size();
         }
 
-        constexpr auto compare(const basic_fixed_string& other) const noexcept -> int
+        template <std::size_t OtherLen>
+        constexpr auto compare(const basic_fixed_string<CharT, OtherLen, Traits>& other) const noexcept
+        -> int
         {
-            std::basic_string_view lhs = *this;
-            std::basic_string_view rhs = other;
-            return lhs.compare(other);
+            return this->view().compare(other.view());
         }
 
-        constexpr auto operator==(const basic_fixed_string& other) const noexcept -> bool
+        template <std::size_t OtherLen>
+        constexpr auto operator==(const basic_fixed_string<CharT, OtherLen, Traits>& other) const noexcept
+        -> bool
         {
-            std::basic_string_view lhs = *this;
-            std::basic_string_view rhs = other;
-            return lhs == rhs;
+            return this->view() == other.view();
         }
 
-        constexpr auto operator<=>(const basic_fixed_string& other) const noexcept -> decltype(auto)
+        template <std::size_t OtherLen>
+        constexpr auto operator<=>(const basic_fixed_string<CharT, OtherLen, Traits>& other) const noexcept
+        -> decltype(auto)
         {
-            std::basic_string_view lhs = *this;
-            std::basic_string_view rhs = other;
-            return lhs <=> rhs;
+            return this->view() <=> other.view();
         }
 
     }; // struct basic_fixed_string
@@ -216,8 +221,7 @@ namespace lightray::mtp
     template <typename CharT, std::size_t Len, typename Traits>
     std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const basic_fixed_string<CharT, Len, Traits>& s)
     {
-        std::basic_string_view sv = s;
-        return os << sv;
+        return os << s.view();
     }
 
 
@@ -282,5 +286,15 @@ namespace lightray::mtp
 
     template <std::size_t Len>
     u32fixed_string(const char32_t (&)[Len]) -> u32fixed_string<Len - 1>;
+
+    namespace fixed_string_literals
+    {
+        template <basic_fixed_string Str>
+        constexpr auto operator ""_fs() noexcept
+        {
+            return Str;
+        }
+
+    } // namespace fixed_string_literals
 
 } // namespace lightray::mtp

@@ -5,17 +5,13 @@
 
 namespace lightray::mtp::concepts
 {
-    struct auto_t
-    {
-        auto_t(auto) {}
-    };
-
-    struct decltype_auto_t
-    {
-        decltype_auto_t(auto&&) {}
-    };
-
     template <typename From, typename To>
     concept convertible_to = std::convertible_to<From, To> || std::same_as<void, std::remove_cv_t<To>>;
+
+    template <typename Derived, typename... Bases>
+    concept public_derived_from = (... && std::derived_from<Derived, Bases>);
+    
+    template <typename Derived, typename... Bases>
+    concept derived_from = (... && std::is_base_of_v<Bases, Derived>);
 
 } // namespace lightray::mtp::concepts

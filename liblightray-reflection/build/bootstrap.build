@@ -1,0 +1,7 @@
+project = liblightray-reflection
+
+using version
+using config
+using test
+using install
+using dist
