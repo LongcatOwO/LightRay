@@ -134,7 +134,7 @@ namespace lightray::refl
                 return mtp::none;
         }
 
-        template <reflected T, std::size_t Index, typename... TArgs, typename Self, typename... Args>
+        template <reflected T, std::size_t Index, bool ForceTemplate, typename... TArgs, typename Self, typename... Args>
         constexpr auto member_info_invoke(Self&& self, Args&&... args)
         noexcept(noexcept(
             [&self = self, &...args = args]()
@@ -161,7 +161,7 @@ namespace lightray::refl
                 else if constexpr (member_info_category<T, Index>() == mc::function)
                 {
                     return member_meta_type_t<T, Index>
-                        ::template invoke<TArgs...>(std::forward<Self>(self), std::forward<Args>(args)...);
+                        ::template invoke<ForceTemplate, TArgs...>(std::forward<Self>(self), std::forward<Args>(args)...);
                 }
             } ()
         ))
@@ -209,7 +209,7 @@ namespace lightray::refl
             else if constexpr (member_info_category<T, Index>() == mc::function)
             {
                 return member_meta_type_t<T, Index>
-                    ::template invoke<TArgs...>(std::forward<Self>(self), std::forward<Args>(args)...);
+                    ::template invoke<ForceTemplate, TArgs...>(std::forward<Self>(self), std::forward<Args>(args)...);
             }
         }
 
@@ -303,13 +303,27 @@ namespace lightray::refl
         template <typename... TArgs, typename Self, typename... Args>
         static constexpr auto invoke(Self&& self, Args&&... args)
         noexcept(noexcept(
-            detail::member_info_invoke<T, Index, TArgs...>(
+            detail::member_info_invoke<T, Index, false, TArgs...>(
                 std::forward<Self>(self), std::forward<Args>(args)...
             )
         ))
         -> decltype(auto)
         {
-            return detail::member_info_invoke<T, Index, TArgs...>(
+            return detail::member_info_invoke<T, Index, false, TArgs...>(
+                std::forward<Self>(self), std::forward<Args>(args)...
+            );
+        }
+
+        template <typename... TArgs, typename Self, typename... Args>
+        static constexpr auto invoke_template(Self&& self, Args&&... args)
+        noexcept(noexcept(
+            detail::member_info_invoke<T, Index, true, TArgs...>(
+                std::forward<Self>(self), std::forward<Args>(args)...
+            )
+        ))
+        -> decltype(auto)
+        {
+            return detail::member_info_invoke<T, Index, true, TArgs...>(
                 std::forward<Self>(self), std::forward<Args>(args)...
             );
         }

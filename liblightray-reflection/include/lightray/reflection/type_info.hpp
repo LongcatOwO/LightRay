@@ -214,4 +214,10 @@ namespace lightray::refl
     template <reflected T>
     constexpr auto type_info_ = type_info_t<T>{};
 
+    template <reflected T>
+    constexpr auto get_type_info(const T&) noexcept
+    {
+        return type_info_<std::remove_volatile_t<T>>;
+    }
+
 } // namespace lightray::refl

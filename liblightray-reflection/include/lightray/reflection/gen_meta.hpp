@@ -396,14 +396,17 @@
     static constexpr auto category() noexcept -> ::lightray::refl::meta_category \
     { return ::lightray::refl::meta_category::function; } \
     \
-    template <bool AsTemplate = false, typename... TArgs, typename Self, typename... Args> \
+    template <bool ForceTemplate, typename... TArgs, typename Self, typename... Args> \
     static constexpr auto invoke(Self&& self, Args&&... args) \
     noexcept(noexcept( \
         [&self = self, &...args = args]() -> decltype(auto) \
         { \
             if constexpr (!std::is_same_v<::lightray::mtp::none_t, std::remove_cvref_t<Self>>) \
             { \
-                if constexpr (!AsTemplate) \
+                if constexpr ( \
+                    !ForceTemplate && (sizeof...(TArgs) == 0) \
+                 && requires { std::forward<Self>(self).DeclaringType::v_id(std::forward<Args>(args)...); } \
+                ) \
                     return std::forward<Self>(self) \
                         .DeclaringType::v_id(std::forward<Args>(args)...); \
                 else \
@@ -412,7 +415,10 @@
             } \
             else \
             { \
-                if constexpr (!AsTemplate) \
+                if constexpr ( \
+                    !ForceTemplate && (sizeof...(TArgs) == 0) \
+                 && requires { DeclaringType::v_id(std::forward<Args>(args)...); } \
+                ) \
                     return DeclaringType::v_id(std::forward<Args>(args)...); \
                 else \
                     return DeclaringType::template v_id<TArgs...>(std::forward<Args>(args)...); \
@@ -423,7 +429,10 @@
     { \
         if constexpr (!std::is_same_v<::lightray::mtp::none_t, std::remove_cvref_t<Self>>) \
         { \
-            if constexpr (!AsTemplate) \
+            if constexpr ( \
+                !ForceTemplate && (sizeof...(TArgs) == 0) \
+             && requires { std::forward<Self>(self).DeclaringType::v_id(std::forward<Args>(args)...); } \
+            ) \
                 return std::forward<Self>(self) \
                     .DeclaringType::v_id(std::forward<Args>(args)...); \
             else \
@@ -432,7 +441,10 @@
         } \
         else \
         { \
-            if constexpr (!AsTemplate) \
+            if constexpr ( \
+                !ForceTemplate && (sizeof...(TArgs) == 0) \
+             && requires { DeclaringType::v_id(std::forward<Args>(args)...); } \
+            ) \
                 return DeclaringType::v_id(std::forward<Args>(args)...); \
             else \
                 return DeclaringType::template v_id<TArgs...>(std::forward<Args>(args)...); \
