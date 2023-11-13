@@ -231,4 +231,17 @@ namespace lightray::mtp::traits
 
     }; // struct qualifier_traits
 
+    using unqualified_traits        = qualifier_traits<               int>;
+    using const_traits              = qualifier_traits<const          int>;
+    using volatile_traits           = qualifier_traits<      volatile int>;
+    using cv_traits                 = qualifier_traits<const volatile int>;
+    using lvalue_traits             = qualifier_traits<               int& >;
+    using rvalue_traits             = qualifier_traits<               int&&>;
+    using const_lvalue_traits       = qualifier_traits<const          int& >;
+    using const_rvalue_traits       = qualifier_traits<const          int&&>;
+    using volatile_lvalue_traits    = qualifier_traits<      volatile int& >;
+    using volatile_rvalue_traits    = qualifier_traits<      volatile int&&>;
+    using cv_lvalue_traits          = qualifier_traits<const volatile int& >;
+    using cv_rvalue_traits          = qualifier_traits<const volatile int&&>;
+
 } // namespace lightray::mtp::traits

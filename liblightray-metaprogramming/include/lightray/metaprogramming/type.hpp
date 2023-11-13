@@ -29,7 +29,7 @@ namespace lightray::mtp
         requires std::constructible_from<type, Args&&...>
         static constexpr auto construct(Args&&... args)
         noexcept(noexcept(type(std::forward<Args>(args)...)))
-        -> type { return type(std::forward<Args>(args)...); }
+        { return type(std::forward<Args>(args)...); }
 
         /*
          * Same as calling construct.

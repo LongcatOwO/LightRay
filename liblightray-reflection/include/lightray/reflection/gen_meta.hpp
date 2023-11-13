@@ -271,14 +271,21 @@
         \
         template <std::size_t I> static constexpr auto function_type() noexcept -> auto {} \
         \
-        LIGHTRAY_PP_VAR_FOR_EACH(LIGHTRAY_REFL_INTERFACE_PROXY_EACH, v_id, __VA_ARGS__) \
+        LIGHTRAY_REFL_INTERFACE_PROXY_EXPAND( \
+            LIGHTRAY_PP_VAR_FOR_EACH(LIGHTRAY_REFL_INTERFACE_PROXY_EACH, v_id, __VA_ARGS__) \
+        )\
     }; \
     \
     template <typename Derived, typename Info> \
-    static constexpr auto proxy_type() noexcept -> auto \
+    static constexpr auto interface_proxy_type() noexcept -> auto \
     { return ::lightray::mtp::type<interface_proxy<Derived, Info>>; }
 
-#define LIGHTRAY_REFL_INTERFACE_PROXY_EACH(v_id, v_i, seq_func_sig) \
+#define LIGHTRAY_REFL_INTERFACE_PROXY_EXPAND(...) __VA_ARGS__
+
+#define LIGHTRAY_REFL_INTERFACE_PROXY_EACH(...) \
+    LIGHTRAY_PP_DEFER(LIGHTRAY_REFL_INTERFACE_PROXY_EACH_I)(__VA_ARGS__)
+
+#define LIGHTRAY_REFL_INTERFACE_PROXY_EACH_I(v_id, v_i, seq_func_sig) \
     template <> constexpr auto function_type<v_i>() noexcept -> auto \
     { return ::lightray::mtp::type<LIGHTRAY_REFL_FUNCSIG_TYPE(seq_func_sig)>; } \
     \

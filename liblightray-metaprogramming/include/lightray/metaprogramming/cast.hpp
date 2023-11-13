@@ -57,7 +57,7 @@ namespace lightray::mtp
             return cast<std::add_rvalue_reference_t<To>>(std::forward<From>(from));
     }
 
-    template <typename To, base_or_derived_of<To> From>
+    template <typename To, typename From>
     requires
         std::is_reference_v<To>
      && base_or_derived_of<std::remove_cvref_t<To>, std::remove_cvref_t<From>>
@@ -76,8 +76,10 @@ namespace lightray::mtp
         return std::forward<From>(from);
     }
 
-    template <typename To, public_base_or_derived_of<To> From>
-    requires traits::qualifier_traits<To>::is_unqualified
+    template <typename To, typename From>
+    requires 
+        traits::qualifier_traits<To>::is_unqualified
+     && public_base_or_derived_of<To, std::remove_cvref_t<From>>
     constexpr auto forward_cast(From&& from) noexcept -> decltype(auto)
     {
         using qual_traits = traits::qualifier_traits<From&&>;
@@ -86,8 +88,10 @@ namespace lightray::mtp
         return static_cast<target_type>(from);
     }
 
-    template <typename To, base_or_derived_of<To> From>
-    requires traits::qualifier_traits<To>::is_unqualified
+    template <typename To, typename From>
+    requires 
+        traits::qualifier_traits<To>::is_unqualified
+     && base_or_derived_of<To, std::remove_cvref_t<From>>
     constexpr auto private_forward_cast(From&& from) noexcept -> decltype(auto)
     {
         using qual_traits = traits::qualifier_traits<From&&>;

@@ -82,6 +82,8 @@ namespace lightray::mtp
         template <auto Key>
         using element_type = typename leaf_type<Key>::element_type;
 
+        static constexpr auto keys() noexcept -> value_pack_t<Keys...> { return {}; }
+
         // Returns the number of elements this dict_tuple contains
         // size() == sizeof...(Ts) == sizeof...(Keys)
         static constexpr auto size() noexcept -> std::size_t { return sizeof...(Ts); }

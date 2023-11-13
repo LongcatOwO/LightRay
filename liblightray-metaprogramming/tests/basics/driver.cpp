@@ -2,7 +2,7 @@
 #include <type_traits>
 #include <iostream>
 
-#include <lightray/metaprogramming/overloaded.hpp>
+#include <lightray/metaprogramming/overload.hpp>
 #include <lightray/metaprogramming/function_pointer.hpp>
 #include <lightray/metaprogramming/type_pack.hpp>
 #include <lightray/metaprogramming/type.hpp>
@@ -21,7 +21,7 @@ auto main() -> int
 
     function_pointer member_func = &S::f;
     function_pointer non_member_func = &f;
-    overloaded o = {member_func, non_member_func};
+    overload o = {member_func, non_member_func};
     S s;
     o(s);
     o(s, 1);

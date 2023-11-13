@@ -11,14 +11,14 @@ namespace lightray::mtp
      * Author: P. Lutchanont
      */
     template <typename... Fns>
-    struct overloaded : Fns...
+    struct overload : Fns...
     {
         // default constructs each functor
-        overloaded() = default;
+        overload() = default;
 
         // constructs each functor using each arguments.
         template <typename... Fs>
-        constexpr overloaded(Fs&&... fs) noexcept(noexcept((Fns(std::forward<Fs>(fs)), ...)))
+        constexpr overload(Fs&&... fs) noexcept(noexcept((Fns(std::forward<Fs>(fs)), ...)))
         :   Fns(std::forward<Fs>(fs))...
         {}
 
@@ -29,6 +29,6 @@ namespace lightray::mtp
 
     // deduce by value.
     template <typename... Fns>
-    overloaded(Fns...) -> overloaded<Fns...>;
+    overload(Fns...) -> overload<Fns...>;
     
 } // namespace lightray::mtp

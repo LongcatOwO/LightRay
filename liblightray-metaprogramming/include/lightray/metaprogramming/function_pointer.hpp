@@ -31,7 +31,7 @@ namespace lightray::mtp
             FuncPtr _ptr;
 
         public:
-            constexpr function_pointer_base() = default;
+            function_pointer_base() = default;
             constexpr function_pointer_base(FuncPtr fp) noexcept : _ptr(fp) {}
 
         }; // struct function_pointer_base
