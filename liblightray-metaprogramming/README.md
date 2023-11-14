@@ -3,8 +3,8 @@
 A C++ template metaprogramming library made for the project LightRay.
 
 This library aims to provide useful tools for performing generic template
-metaprogramming. This includes various trait classes, compile-time manipulation classes,
-and syntax unification classes.
+metaprogramming. This includes various trait classes, functional and fluent
+interface for variadic type pack manipulation, and syntax unification classes.
 
 ## Examples
 

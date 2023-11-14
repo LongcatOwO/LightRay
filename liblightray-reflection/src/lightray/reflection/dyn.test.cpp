@@ -2,6 +2,7 @@
 #include <format>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include <lightray/debug/assertion.hpp>
 #include <lightray/debug/print.hpp>
@@ -59,21 +60,22 @@ int main()
 
     lr_test_case(tests, test_basic)
     {
-        dyn<basic_prototype, true> cat = std::make_unique<basic_cat>();
-        dyn<basic_prototype, true> dog = std::make_unique<basic_dog>();
+        std::vector<dyn<basic_prototype, true>> animals;
+        animals.push_back(std::make_unique<basic_cat>());
+        animals.push_back(std::make_unique<basic_dog>());
 
-        assert_true(cat.speak() == "I ate 0 food MEOW!", "");
-        assert_true(dog.speak() == "I ate 0 food WOOF!", "");
+        assert_true(animals[0].speak() == "I ate 0 food MEOW!", "");
+        assert_true(animals[1].speak() == "I ate 0 food WOOF!", "");
 
-        cat.eat(30);
-        dog.eat(20);
+        animals[0].eat(30);
+        animals[1].eat(20);
 
-        assert_true(cat.speak() == "I ate 15 food MEOW!", "");
-        assert_true(dog.speak() == "I ate 20 food WOOF!", "");
+        assert_true(animals[0].speak() == "I ate 15 food MEOW!", "");
+        assert_true(animals[1].speak() == "I ate 20 food WOOF!", "");
 
-        cat = dog;
+        animals[0] = animals[1];
 
-        assert_true(cat.speak() == "I ate 20 food WOOF!", "");
+        assert_true(animals[0].speak() == "I ate 20 food WOOF!", "");
     };
 
     tests.execute_all([](const std::exception& e){ println("{}", e.what()); });
