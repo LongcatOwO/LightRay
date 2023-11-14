@@ -108,7 +108,7 @@ namespace lightray::refl
                 return mtp::function_pointer<mtp::owning<void*> (*)(self_ptr_t)>{};
             else
                 return mtp::function_pointer{+[](self_ptr_t self) -> mtp::owning<void*>{
-                    return new auto{self.as<TargetType>()};
+                    return new auto(self.as<TargetType>());
                 }};
         }
 

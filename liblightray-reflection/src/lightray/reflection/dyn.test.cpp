@@ -1,6 +1,7 @@
 #include <exception>
+#include <format>
 #include <memory>
-#include <sstream>
+#include <string>
 
 #include <lightray/debug/assertion.hpp>
 #include <lightray/debug/print.hpp>
@@ -21,11 +22,11 @@ using namespace lightray::refl;
 struct basic_prototype
 {
     void eat(int food);
-    void speak(std::ostream& os) const;
+    std::string speak() const;
 
     LIGHTRAY_REFL_TYPE(namespace(::), basic_prototype, (), 
         (func, eat, (id_accessor, interface_proxy((void)((int)(food))())))
-        (func, speak, (id_accessor, interface_proxy((void)((std::ostream&)(os))(const))))
+        (func, speak, (id_accessor, interface_proxy((std::string)()(const))))
     )
 
 }; // struct prototype
@@ -37,7 +38,7 @@ private:
 
 public:
     void eat(int food) { _food += food / 2; }
-    void speak(std::ostream& os) const { println(os, "I ate {} food MEOW!", _food); }
+    std::string speak() const { return std::format("I ate {} food MEOW!", _food); }
 
 }; // struct basic_cast
 
@@ -48,20 +49,31 @@ private:
 
 public:
     void eat(int food) { _food += food; }
-    void speak(std::ostream& os) const { println(os, "I ate {} food WOOF!", _food); }
+    std::string speak() const { return std::format("I ate {} food WOOF!", _food); }
 
 }; // struct basic_dog
 
-auto main() -> int
+int main()
 {
     test_case_database tests;
 
-    lr_test_case(tests, basic_test)
+    lr_test_case(tests, test_basic)
     {
-        const dyn<basic_prototype> cat = std::make_unique<basic_cat>();
-        std::ostringstream output;
-        cat.speak(output);
-        assert_true(output.str() == "I ate 0 food MEOW!\n", "");
+        dyn<basic_prototype, true> cat = std::make_unique<basic_cat>();
+        dyn<basic_prototype, true> dog = std::make_unique<basic_dog>();
+
+        assert_true(cat.speak() == "I ate 0 food MEOW!", "");
+        assert_true(dog.speak() == "I ate 0 food WOOF!", "");
+
+        cat.eat(30);
+        dog.eat(20);
+
+        assert_true(cat.speak() == "I ate 15 food MEOW!", "");
+        assert_true(dog.speak() == "I ate 20 food WOOF!", "");
+
+        cat = dog;
+
+        assert_true(cat.speak() == "I ate 20 food WOOF!", "");
     };
 
     tests.execute_all([](const std::exception& e){ println("{}", e.what()); });
