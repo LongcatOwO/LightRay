@@ -1,0 +1,3 @@
+# liblightray-debug
+
+C++ library

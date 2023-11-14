@@ -7,6 +7,7 @@
 #include <lightray/metaprogramming/type_pack.hpp>
 #include <lightray/metaprogramming/type.hpp>
 #include <lightray/metaprogramming/cast.hpp>
+#include <lightray/metaprogramming/offset_of.hpp>
 
 
 struct S { void f() { std::cout << "Hello, member f!\n"; } };

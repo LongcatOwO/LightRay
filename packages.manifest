@@ -6,3 +6,6 @@ location: liblightray-metaprogramming/
 
 :
 location: liblightray-reflection/
+
+:
+location: liblightray-debug/

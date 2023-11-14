@@ -81,7 +81,7 @@ namespace lightray::mtp::traits
     template <typename Func>
     struct function_traits 
     {
-        static constexpr auto is_function_like = false;
+        static constexpr bool is_function_like = false;
 
     }; // function_traits
 
@@ -100,21 +100,21 @@ namespace lightray::mtp::traits
     template <typename R, typename... Args>
     struct function_traits<R (Args...)>
     {
-        static constexpr auto is_function_like = true;
+        static constexpr bool is_function_like = true;
 
         using return_type = R;
         
         template <std::size_t I>
         using argument_type = typename decltype(type_pack<Args...>.template get<I>())::type;
 
-        static constexpr auto argument_pack = type_pack<Args...>;
+        static constexpr type_pack_t<Args...> argument_pack = type_pack<Args...>;
 
         static constexpr std::size_t argument_count = sizeof...(Args);
 
         using signature_type = R (Args...);
         using qualifier_traits = qualifier_traits<int>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = false;
 
     }; // function_traits<R (Args...)>
 
@@ -123,8 +123,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) const;
         using qualifier_traits = qualifier_traits<int const>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = false;
     };
 
     template <typename R, typename... Args>
@@ -132,8 +132,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) volatile;
         using qualifier_traits = qualifier_traits<int volatile>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = false;
     };
 
     template <typename R, typename... Args>
@@ -141,8 +141,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) const volatile;
         using qualifier_traits = qualifier_traits<int const volatile>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = false;
     };
 
     template <typename R, typename... Args>
@@ -150,8 +150,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) &;
         using qualifier_traits = qualifier_traits<int &>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = false;
     };
 
     template <typename R, typename... Args>
@@ -159,8 +159,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) const &;
         using qualifier_traits = qualifier_traits<int const &>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = false;
     };
 
     template <typename R, typename... Args>
@@ -168,8 +168,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) volatile &;
         using qualifier_traits = qualifier_traits<int volatile &>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = false;
     };
 
     template <typename R, typename... Args>
@@ -177,8 +177,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) const volatile &;
         using qualifier_traits = qualifier_traits<int const volatile &>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = false;
     };
 
     template <typename R, typename... Args>
@@ -186,8 +186,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) &&;
         using qualifier_traits = qualifier_traits<int &&>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = false;
     };
 
     template <typename R, typename... Args>
@@ -195,8 +195,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) const &&;
         using qualifier_traits = qualifier_traits<int const &&>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = false;
     };
 
     template <typename R, typename... Args>
@@ -204,8 +204,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) volatile &&;
         using qualifier_traits = qualifier_traits<int volatile &&>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = false;
     };
 
     template <typename R, typename... Args>
@@ -213,8 +213,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) const volatile &&;
         using qualifier_traits = qualifier_traits<int const volatile &&>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = false;
     };
 
     
@@ -225,8 +225,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...);
         using qualifier_traits = qualifier_traits<int>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -234,8 +234,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) const;
         using qualifier_traits = qualifier_traits<int const>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -243,8 +243,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) volatile;
         using qualifier_traits = qualifier_traits<int volatile>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -252,8 +252,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) const volatile;
         using qualifier_traits = qualifier_traits<int const volatile>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -261,8 +261,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) &;
         using qualifier_traits = qualifier_traits<int &>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -270,8 +270,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) const &;
         using qualifier_traits = qualifier_traits<int const &>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -279,8 +279,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) volatile &;
         using qualifier_traits = qualifier_traits<int volatile &>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -288,8 +288,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) const volatile &;
         using qualifier_traits = qualifier_traits<int const volatile &>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -297,8 +297,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) &&;
         using qualifier_traits = qualifier_traits<int &&>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -306,8 +306,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) const &&;
         using qualifier_traits = qualifier_traits<int const &&>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -315,8 +315,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) volatile &&;
         using qualifier_traits = qualifier_traits<int volatile &&>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -324,8 +324,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) const volatile &&;
         using qualifier_traits = qualifier_traits<int const volatile &&>;
-        static constexpr auto is_noexcept = false;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = false;
+        static constexpr bool is_variadic = true;
     };
 
 
@@ -340,8 +340,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) noexcept;
         using qualifier_traits = qualifier_traits<int>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = false;
     };
 
     template <typename R, typename... Args>
@@ -349,8 +349,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) const noexcept;
         using qualifier_traits = qualifier_traits<int const>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = false;
     };
 
     template <typename R, typename... Args>
@@ -358,8 +358,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) volatile noexcept;
         using qualifier_traits = qualifier_traits<int volatile>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = false;
     };
 
     template <typename R, typename... Args>
@@ -367,8 +367,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) const volatile noexcept;
         using qualifier_traits = qualifier_traits<int const volatile>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = false;
     };
 
     template <typename R, typename... Args>
@@ -376,8 +376,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) & noexcept;
         using qualifier_traits = qualifier_traits<int &>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = false;
     };
 
     template <typename R, typename... Args>
@@ -385,8 +385,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) const & noexcept;
         using qualifier_traits = qualifier_traits<int const &>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = false;
     };
 
     template <typename R, typename... Args>
@@ -394,8 +394,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) volatile & noexcept;
         using qualifier_traits = qualifier_traits<int volatile &>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = false;
     };
 
     template <typename R, typename... Args>
@@ -403,8 +403,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) const volatile & noexcept;
         using qualifier_traits = qualifier_traits<int const volatile &>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = false;
     };
 
     template <typename R, typename... Args>
@@ -412,8 +412,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) && noexcept;
         using qualifier_traits = qualifier_traits<int &&>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = false;
     };
 
     template <typename R, typename... Args>
@@ -421,8 +421,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) const && noexcept;
         using qualifier_traits = qualifier_traits<int const &&>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = false;
     };
 
     template <typename R, typename... Args>
@@ -430,8 +430,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) volatile && noexcept;
         using qualifier_traits = qualifier_traits<int volatile &&>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = false;
     };
 
     template <typename R, typename... Args>
@@ -439,8 +439,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args...) const volatile && noexcept;
         using qualifier_traits = qualifier_traits<int const volatile &&>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = false;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = false;
     };
 
     
@@ -451,8 +451,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) noexcept;
         using qualifier_traits = qualifier_traits<int>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -460,8 +460,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) const noexcept;
         using qualifier_traits = qualifier_traits<int const>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -469,8 +469,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) volatile noexcept;
         using qualifier_traits = qualifier_traits<int volatile>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -478,8 +478,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) const volatile noexcept;
         using qualifier_traits = qualifier_traits<int const volatile>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -487,8 +487,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) & noexcept;
         using qualifier_traits = qualifier_traits<int &>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -496,8 +496,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) const & noexcept;
         using qualifier_traits = qualifier_traits<int const &>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -505,8 +505,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) volatile & noexcept;
         using qualifier_traits = qualifier_traits<int volatile &>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -514,8 +514,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) const volatile & noexcept;
         using qualifier_traits = qualifier_traits<int const volatile &>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -523,8 +523,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) && noexcept;
         using qualifier_traits = qualifier_traits<int &&>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -532,8 +532,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) const && noexcept;
         using qualifier_traits = qualifier_traits<int const &&>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -541,8 +541,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) volatile && noexcept;
         using qualifier_traits = qualifier_traits<int volatile &&>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = true;
     };
 
     template <typename R, typename... Args>
@@ -550,8 +550,8 @@ namespace lightray::mtp::traits
     {
         using signature_type = R (Args..., ...) const volatile && noexcept;
         using qualifier_traits = qualifier_traits<int const volatile &&>;
-        static constexpr auto is_noexcept = true;
-        static constexpr auto is_variadic = true;
+        static constexpr bool is_noexcept = true;
+        static constexpr bool is_variadic = true;
     };
 
 } // namespace lightray::mtp::traits

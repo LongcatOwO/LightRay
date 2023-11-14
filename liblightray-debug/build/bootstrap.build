@@ -1,0 +1,7 @@
+project = liblightray-debug
+
+using version
+using config
+using test
+using install
+using dist

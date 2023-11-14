@@ -4,7 +4,6 @@
 #include <cstddef>
 #include <memory>
 #include <tuple>
-#include <typeindex>
 #include <typeinfo>
 #include <type_traits>
 #include <unordered_map>
@@ -79,7 +78,7 @@ namespace lightray::refl
                 });
             };
 
-            if constexpr (qual_traits::is_unqualified)
+            if constexpr (!qual_traits::is_reference)
             {
                 using lself_ptr_t = mtp::void_ref_ptr<
                     mtp::traits::qualifier_traits<typename qual_traits::template apply<int>&>
@@ -153,7 +152,7 @@ namespace lightray::refl
                     >()...
                 );
                 constexpr auto func_ptr_count = std::tuple_size_v<std::remove_const_t<decltype(func_ptr_tuple)>>;
-                return mtp::make_index_sequence<func_ptr_count>.apply([func_ptr_tuple]<auto... FnIs>{
+                return mtp::make_index_sequence<func_ptr_count>.apply([func_ptr_tuple=func_ptr_tuple]<auto... FnIs>{
                     return mtp::overload{std::get<FnIs>(func_ptr_tuple)...};
                 });
             });
@@ -474,23 +473,3 @@ namespace lightray::refl
     }; // struct dyn
 
 } // namespace lightray::refl
-
-// #include "gen_meta.hpp"
-// 
-// struct Prototype
-// {
-//     void f();
-// 
-//     LIGHTRAY_REFL_TYPE(namespace(::), Prototype, (),
-//         (func, f, (id_accessor, interface_proxy((void)()())))
-//     )
-// };
-// 
-// void f()
-// {
-//     using namespace lightray;
-//     using namespace refl;
-//     using namespace mtp;
-// 
-//     dyn<Prototype> d;
-// }

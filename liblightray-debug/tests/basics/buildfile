@@ -1,0 +1,3 @@
+import libs = liblightray-debug%lib{lightray-debug}
+
+exe{driver}: {hxx ixx txx cxx}{**} $libs testscript{**}

@@ -26,7 +26,7 @@ namespace lightray::mtp::traits
      * Aliases to always_false<T>::value.
      */
     template <typename T>
-    auto constexpr always_false_v = always_false<T>::value;
+    constexpr bool always_false_v = always_false<T>::value;
 
     /*
      * Made to be the counterpart of always_false. Not sure of its use case.
@@ -38,6 +38,6 @@ namespace lightray::mtp::traits
      * Aliases to always_true<T>::value.
      */
     template <typename T>
-    auto constexpr always_true_v = always_true<T>::value;
+    constexpr bool always_true_v = always_true<T>::value;
 
 } // namespace lightray::mtp::traits

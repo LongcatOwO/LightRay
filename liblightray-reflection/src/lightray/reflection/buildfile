@@ -4,6 +4,7 @@ pub = [dir_path] ../../../include/lightray/reflection/
 
 include $pub
 
+import libs += liblightray-debug%lib{lightray-debug}
 
 # Unit tests.
 #
@@ -18,7 +19,7 @@ for t: cxx{**.test...}
   d = $directory($t)
   n = $name($t)...
 
-  ./: $d/exe{$n}: $t $d/{hxx ixx txx}{**} $d/testscript{+$n} $pub/lib{lightray-reflection}
+  ./: $d/exe{$n}: $t $d/{hxx ixx txx}{**} $d/testscript{+$n} $pub/lib{lightray-reflection} $libs
 }
 
 # Build options.

@@ -1,10 +1,9 @@
 : 1
-name: liblightray-reflection
+name: liblightray-debug
 version: 0.1.0-a.0.z
-type: lib,binless
 language: c++
 project: LightRay
-summary: lightray-reflection C++ library
+summary: lightray-debug C++ library
 license: other: proprietary ; Not free/open source.
 description-file: README.md
 url: https://example.org/LightRay
@@ -12,6 +11,4 @@ email: greatphu@gmail.com
 #build-error-email: greatphu@gmail.com
 depends: * build2 >= 0.16.0
 depends: * bpkg >= 0.16.0
-depends: liblightray-preprocessor
-depends: liblightray-metaprogramming
-depends: liblightray-debug
+#depends: libhello ^1.0.0

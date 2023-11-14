@@ -26,7 +26,7 @@ namespace lightray::mtp
     struct void_ref_ptr;
 
     template <typename QualT>
-    requires traits::qualifier_traits<QualT>::is_reference
+    requires std::is_reference_v<QualT>
     struct void_ref_ptr<traits::qualifier_traits<QualT>>
     {
         template <typename>

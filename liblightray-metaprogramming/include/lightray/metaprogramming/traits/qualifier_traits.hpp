@@ -158,27 +158,27 @@ namespace lightray::mtp::traits
     {
         // Defines to true if T has const qualifier after removing its reference qualifier.
         // Otherwise, false.
-        static constexpr auto is_const = std::is_const_v<std::remove_reference_t<T>>;
+        static constexpr bool is_const = std::is_const_v<std::remove_reference_t<T>>;
 
         // Defines to true if T has volatile qualifier after removing its reference qualifier.
         // Otherwise, false.
-        static constexpr auto is_volatile = std::is_volatile_v<std::remove_reference_t<T>>;
+        static constexpr bool is_volatile = std::is_volatile_v<std::remove_reference_t<T>>;
 
         // Defines to true if T has reference qualifier.
         // Otherwise, false.
-        static constexpr auto is_reference = std::is_reference_v<T>;
+        static constexpr bool is_reference = std::is_reference_v<T>;
 
         // Defines to true if T has lvalue reference qualifier.
         // Otherwise, false.
-        static constexpr auto is_lvalue_reference = std::is_lvalue_reference_v<T>;
+        static constexpr bool is_lvalue_reference = std::is_lvalue_reference_v<T>;
 
         // Defines to true if T has rvalue reference qualifier.
         // Otherwise, false.
-        static constexpr auto is_rvalue_reference = std::is_rvalue_reference_v<T>;
+        static constexpr bool is_rvalue_reference = std::is_rvalue_reference_v<T>;
 
-        static constexpr auto is_qualified = is_const || is_volatile || is_reference;
+        static constexpr bool is_qualified = is_const || is_volatile || is_reference;
 
-        static constexpr auto is_unqualified = !is_qualified;
+        static constexpr bool is_unqualified = !is_qualified;
 
         // If is_const is true, add const qualifier to U. Otherwise, do nothing.
         template <typename U>

@@ -1,0 +1,6 @@
+$out_root/
+{
+  include src/lightray/debug/
+}
+
+export $out_root/src/lightray/debug/$import.target

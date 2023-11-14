@@ -1,0 +1,16 @@
+pub_hdrs = {hxx ixx txx}{** -version} hxx{version}
+
+./: $pub_hdrs
+
+hxx{version}: in{version} $src_root/manifest
+
+hxx{export}@./: cxx.importable = false
+
+# Install into the lightray/debug/ subdirectory of, say, /usr/include/
+# recreating subdirectories.
+#
+{hxx ixx txx}{*}:
+{
+  install         = include/lightray/debug/
+  install.subdirs = true
+}
