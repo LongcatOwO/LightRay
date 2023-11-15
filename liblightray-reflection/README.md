@@ -1,25 +1,36 @@
 # liblightray-reflection
 
-Compile-time, (almost) type-complete reflection C++ library. Allows you to inspect your type
-and performing operations on them reflectively with guaranteed type safety.
+Compile-time, (almost) type-complete reflection C++ library. Allows you to
+inspect your type and performing operations on them reflectively with guaranteed
+type safety.
 
 ## Examples
 
 Defining a generic "print all data members" function.
 
 ```c++
+#include <iostream>
+#include <lightray/reflection/gen_meta.hpp>
+#include <lightray/reflection/member_info.hpp>
+#include <lightray/reflection/meta_category.hpp>
+#include <lightray/reflection/type_info.hpp>
+
 template <reflected T>
 void print_all_data_members(const T& obj)
 {
     using namespace lightray::refl;
     using namespace lightray::mtp;
 
+    // filter members
     type_info_<T>.members().filter([]<auto Member>{
+        // return compile-time constant
+        // true if member is a non-static variable
         return value<
             (Member.category() == meta_category::variable)
-         && (Member.is_static() == false_)
+         && (Member.is_static() == false_) // false_ is an alias for value<false>.
         >; 
     })
+    // print each member
     .for_each([&]<auto Member>{
         std::cout << Member.name() << ": " << Member.invoke(obj) << '\n';
     });
@@ -37,7 +48,7 @@ struct S
     )
 };
 
-// works on template!
+// Reflection can work on template too.
 template <typename T>
 struct Vec3
 {
@@ -61,12 +72,17 @@ int main()
                                   //         y: 3.4
                                   //         y: 4.5
 }
-
 ```
 
 Automatic implementation of ducked-type type erased object.
 
 ```c++
+#include <memory>
+#include <string>
+#include <vector>
+#include <lightray/reflection/dyn.hpp>
+#include <lightray/reflection/gen_meta.hpp>
+
 struct Stringifiable
 {
     int to_string; // create a dummy variable just for its id
@@ -97,5 +113,4 @@ int main()
     for (const auto& e : stringifiables)
         std::cout << e.to_string() << '\n';
 }
-
 ```

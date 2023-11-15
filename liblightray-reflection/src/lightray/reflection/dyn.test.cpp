@@ -20,6 +20,7 @@ using namespace lightray::mtp;
 using namespace lightray::refl;
 
 
+
 struct basic_prototype
 {
     void eat(int food);
