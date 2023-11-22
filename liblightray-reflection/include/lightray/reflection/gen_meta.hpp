@@ -208,13 +208,14 @@
 
 
 // Optional ALL metadata: declare proxy of this entity
-#define LIGHTRAY_REFL_PROXY(v_id) \
+
+#define LIGHTRAY_REFL_PROXY(v_id, ...) \
     template <typename Derived, typename Info> struct proxy \
     { \
         template <typename... Params, typename... Args> \
         constexpr decltype(auto) v_id(Args&&... args) \
         noexcept(noexcept( \
-            [&...args = args] \
+            [&...args = args, this] \
             { \
                 if constexpr (sizeof...(Params) == 0) \
                     return static_cast<Derived*>(this) \
@@ -236,7 +237,7 @@
         template <typename... Params, typename... Args> \
         constexpr decltype(auto) v_id(Args&&... args) const \
         noexcept(noexcept( \
-            [&...args = args] \
+            [&...args = args, this] \
             { \
                 if constexpr (sizeof...(Params) == 0) \
                     return static_cast<Derived*>(this) \
